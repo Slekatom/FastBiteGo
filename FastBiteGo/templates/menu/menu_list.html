@@ -1,0 +1,6 @@
+{% for i in categories %}
+  <h2>{{ i.title }}</h2>
+    {% for meal in i.meal_set.all %}
+    <p>{{ meal.title }}</p>
+{% endfor %}
+{% endfor %}
