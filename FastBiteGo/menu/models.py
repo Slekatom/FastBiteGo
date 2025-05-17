@@ -16,6 +16,7 @@ class Meal(models.Model):
     description = models.TextField(max_length=50)
     media = models.ImageField(upload_to='media/category')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    price = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.title} in category {self.category}"
