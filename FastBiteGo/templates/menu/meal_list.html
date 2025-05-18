@@ -1,0 +1,6 @@
+{{ data.title }}
+
+{% for meal in data.meal_set.all %}
+<p>{{ meal.title }}</p>
+<img src="{{ meal.media.url }}" alt="{{ meal.title }}">
+{% endfor %}
