@@ -1,26 +1,29 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from .forms import *
-from django.views.generic import CreateView
-from django.urls import reverse
+from django.views.generic import CreateView, FormView
+from django.urls import reverse, reverse_lazy
 
-class LoginView(CreateView):
-    model = CustomUser
+
+class LoginView(FormView):
     template_name = "accounts/login.html"
-    from_class = AuthenticationForm
+    form_class = AuthenticationForm
+    success_url = reverse_lazy("menu:landing")
 
-    def get_success_url(self):
-        return redirect(reverse('landing:'))
+    def form_valid(self, form):
+        user = form.get_user()
+        login(self.request, user)
+        return super().form_valid(form)
 
 class RegisterView(CreateView):
     model = CustomUser
     template_name = "accounts/register.html"
-    from_class = CustomUserCreationForm
+    form_class = CustomUserCreationForm
 
     def get_success_url(self):
-        return redirect(reverse("landing:"))
+        return reverse_lazy("menu:landing")
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('accounts:login')
 
