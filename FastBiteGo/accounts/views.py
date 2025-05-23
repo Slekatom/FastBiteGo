@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from .forms import *
-from django.views.generic import CreateView, FormView, DetailView, TemplateView, UpdateView
+from django.views.generic import CreateView, FormView, DetailView, TemplateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 
 
@@ -60,3 +60,11 @@ class MyProfileUpdate(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("accounts:my_profile")
+
+class MyProfileDelete(DeleteView):
+    model = CustomUser
+    template_name = "accounts/delete.html"
+    success_url = reverse_lazy("menu:landing")
+
+    def get_object(self, queryset=None):
+        return self.request.user
