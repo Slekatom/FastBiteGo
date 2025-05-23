@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from .forms import *
-from django.views.generic import CreateView, FormView
+from django.views.generic import CreateView, FormView, DetailView, TemplateView
 from django.urls import reverse, reverse_lazy
 
 
@@ -27,3 +27,15 @@ def logout_view(request):
     logout(request)
     return redirect('accounts:login')
 
+class Profile(DetailView):
+    model = CustomUser
+    template_name = "accounts/profile.html"
+    context_object_name = "profile"
+
+class MyProfile(TemplateView):
+    template_name = "accounts/profile.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["profile"] = self.request.user
+        return context
