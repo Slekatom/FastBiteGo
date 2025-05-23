@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from .forms import *
-from django.views.generic import CreateView, FormView, DetailView, TemplateView
+from django.views.generic import CreateView, FormView, DetailView, TemplateView, UpdateView
 from django.urls import reverse, reverse_lazy
 
 
@@ -49,3 +49,14 @@ class MyProfile(TemplateView):
         context = super().get_context_data(**kwargs)
         context["profile"] = self.request.user
         return context
+
+class MyProfileUpdate(UpdateView):
+    model = CustomUser
+    template_name = "accounts/update.html"
+    fields = ["first_name", "last_name", "description", "birthdate", "address", "phone", "image"]
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_success_url(self):
+        return reverse_lazy("accounts:my_profile")
