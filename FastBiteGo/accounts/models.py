@@ -9,6 +9,7 @@ class CustomUser(AbstractUser):
     address = models.CharField(max_length=40)
     password = models.CharField(max_length=20)
     phone = models.PositiveIntegerField(null = True, blank=True)
+    image = models.ImageField(blank=True, null=True)
 
     def __str__(self):
         return self.username

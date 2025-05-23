@@ -10,6 +10,11 @@ class LoginView(FormView):
     form_class = AuthenticationForm
     success_url = reverse_lazy("menu:landing")
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(reverse_lazy("menu:landing"))
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         user = form.get_user()
         login(self.request, user)
@@ -19,6 +24,11 @@ class RegisterView(CreateView):
     model = CustomUser
     template_name = "accounts/register.html"
     form_class = CustomUserCreationForm
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(reverse_lazy("menu:landing"))
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy("menu:landing")
