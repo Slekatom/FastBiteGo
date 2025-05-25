@@ -4,7 +4,7 @@ from .forms import *
 from django.views.generic import CreateView, FormView, DetailView, TemplateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 
-
+print("test")
 class LoginView(FormView):
     template_name = "accounts/login.html"
     form_class = AuthenticationForm
