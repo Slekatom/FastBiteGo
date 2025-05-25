@@ -12,6 +12,15 @@ class OrderCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        order = form.save()
+
+        cart, created = Cart.objects.get_or_create(status="In progress", user=self.request.user)
+
+        CartItems.objects.create(
+            cart=cart,
+            meal=order.meal,
+            amount=order.amount,
+        )
         return super().form_valid(form)
 
     def get_success_url(self):
