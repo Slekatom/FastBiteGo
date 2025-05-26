@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout, authenticate
 from .forms import *
 from django.views.generic import CreateView, FormView, DetailView, TemplateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from .models import *
+from django.shortcuts import get_object_or_404
+from menu.models import Meal
 
 class OrderCreateView(CreateView):
     model = Order
@@ -12,6 +12,33 @@ class OrderCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        order = form.save()
+
+        cart, created = Cart.objects.get_or_create(status="In progress", user=self.request.user)
+
+        CartItems.objects.create(
+            cart=cart,
+            meal=order.meal,
+            amount=order.amount,
+        )
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("menu:landing")
+
+class OrderByIdCreateView(CreateView):
+    model = Order
+    template_name = "cart/order_by_id_create.html"
+    form_class = OrderByIdCreate
+
+    def dispatch(self, request, *args, **kwargs):
+        self.meal = get_object_or_404(Meal, pk=kwargs["pk"])
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        meal = self.meal
+        form.instance.user = self.request.user
+        form.instance.meal = meal
         order = form.save()
 
         cart, created = Cart.objects.get_or_create(status="In progress", user=self.request.user)
