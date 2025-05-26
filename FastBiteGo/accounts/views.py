@@ -30,6 +30,12 @@ class RegisterView(CreateView):
             return redirect(reverse_lazy("menu:landing"))
         return super().dispatch(request, *args, **kwargs)
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(self.request, self.object)
+        return response
+
+
     def get_success_url(self):
         return reverse_lazy("menu:landing")
 
