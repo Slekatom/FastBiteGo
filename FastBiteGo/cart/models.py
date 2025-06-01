@@ -13,6 +13,7 @@ class Order(models.Model):
         return f"{self.meal} in amount {self.amount}"
 
 class Cart(models.Model):
+
     STATUS = [
         ("In progress", "In progress"),
         ("History", "History"),
@@ -42,7 +43,7 @@ class Cart(models.Model):
 
 class CartItems(models.Model):
     meal = models.ForeignKey(Meal, on_delete = models.CASCADE)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
     amount = models.PositiveIntegerField(default=1)
 
     def __str__(self):
