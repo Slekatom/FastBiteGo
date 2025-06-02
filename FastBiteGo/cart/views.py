@@ -71,7 +71,7 @@ class CartView(ListView):
         return context
 
     def get_queryset(self):
-        cart, _ = Cart.objects.get_or_create(user=self.request.user, status="In progresss")
+        cart, _ = Cart.objects.get_or_create(user=self.request.user, status="In progress")
         return cart.items.all()
 
 
