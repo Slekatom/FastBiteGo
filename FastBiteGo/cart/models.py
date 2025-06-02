@@ -9,7 +9,7 @@ class Order(models.Model):
     user = models.ForeignKey(user, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
-        return f"{self.meal} in amount {self.amount}"
+        return f"{self.meal}"
 
 class Cart(models.Model):
 
@@ -44,6 +44,7 @@ class CartItems(models.Model):
     meal = models.ForeignKey(Meal, on_delete = models.CASCADE)
     cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
     amount = models.PositiveIntegerField(default=1)
+    total_price = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.meal} ---> {self.cart}"

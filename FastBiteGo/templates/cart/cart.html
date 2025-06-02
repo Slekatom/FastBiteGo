@@ -1,7 +1,10 @@
+
+
 <p>{{ cart }}</p>
 
 {% for i in order %}
 {{ i.meal.title }}
+Price: {{ i.total_price }}
 
 
 <form method="post" action="{% url 'cart:remove' i.id %}" style="display:inline;">
