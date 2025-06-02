@@ -41,7 +41,7 @@ class OrderByIdCreateView(CreateView):
         form.instance.meal = meal
         order = form.save()
 
-        cart, created = Cart.objects.get_or_create(user = self.request.user, status = "In Progress")
+        cart, created = Cart.objects.get_or_create(user = self.request.user, status = "In progress")
 
         CartItems.objects.create(
             cart=cart,
@@ -66,12 +66,12 @@ class CartView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cart, created = Cart.objects.get_or_create(user = self.request.user, status = "In Progress")
+        cart, created = Cart.objects.get_or_create(user = self.request.user, status = "In progress")
         context["cart"] = cart
         return context
 
     def get_queryset(self):
-        cart, _ = Cart.objects.get_or_create(user=self.request.user, status="In Progress")
+        cart, _ = Cart.objects.get_or_create(user=self.request.user, status="In progress")
         return cart.items.all()
 
 
