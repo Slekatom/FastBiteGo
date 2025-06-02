@@ -19,7 +19,6 @@ class OrderCreateView(CreateView):
         CartItems.objects.create(
             cart=cart,
             meal=order.meal,
-            amount=order.amount,
         )
         return super().form_valid(form)
 
@@ -45,8 +44,7 @@ class OrderByIdCreateView(CreateView):
 
         CartItems.objects.create(
             cart=cart,
-            meal=order.meal,
-            amount=order.amount,
+            meal=order.meal
         )
         return super().form_valid(form)
 
@@ -64,10 +62,17 @@ class CartView(ListView):
     template_name = "cart/cart.html"
     context_object_name = "order"
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cart, created = Cart.objects.get_or_create(user = self.request.user, status = "In progress")
+        total_amount = 0
+        for item in cart.items.all():
+            amount = item.meal.price * item.amount # множу ціну на калькість замовлень
+            total_amount += amount
+
         context["cart"] = cart
+        context["total_amount"] = total_amount
         return context
 
     def get_queryset(self):

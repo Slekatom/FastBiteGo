@@ -3,6 +3,7 @@
 {% for i in order %}
 {{ i.meal.title }}
 
+
 <form method="post" action="{% url 'cart:remove' i.id %}" style="display:inline;">
     {% csrf_token %}
     <button type="submit">❌ Удалить</button>
@@ -12,4 +13,5 @@
   <p>Корзина пуста.</p>
 
 {% endfor %}
+{{ total_amount }}
 

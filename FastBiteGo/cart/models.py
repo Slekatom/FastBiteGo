@@ -5,7 +5,6 @@ from accounts.models import CustomUser
 user = CustomUser
 class Order(models.Model):
     meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
-    amount = models.PositiveIntegerField(default=1)
     date_time = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(user, on_delete=models.CASCADE, default=None)
 
