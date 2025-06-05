@@ -11,6 +11,7 @@ class MenuList(ListView):
     template_name = "menu/menu_list.html"
     context_object_name = "categories"
     filter_form = None
+    search_form = None
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -19,11 +20,18 @@ class MenuList(ListView):
             selected_category = self.filter_form.cleaned_data.get("category")
             if selected_category:
                 queryset = queryset.filter(id=selected_category.id)
+
+        self.search_form = Search(self.request.GET or None)
+        if self.search_form.is_valid():
+            searched = self.search_form.cleaned_data.get("title")
+            if searched:
+                queryset = queryset.filter(title__icontains=searched)
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["filter_form"] = self.filter_form
+        context["search"] = self.search_form
         return context
 
 class CategoryDetailView(DetailView):
