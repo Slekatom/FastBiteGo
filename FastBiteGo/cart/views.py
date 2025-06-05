@@ -67,16 +67,14 @@ class CartView(ListView):
         context = super().get_context_data(**kwargs)
         cart, created = Cart.objects.get_or_create(user = self.request.user, status = "In progress")
         total_amount = 0
-        for item in cart.items.all():
-            item.total_price = item.meal.price * item.amount # множу ціну на калькість замовлень
-            item.save()
-            total_amount += item.total_price
+        if cart.items.all():
+            for item in cart.items.all():
+                item.total_price = item.meal.price * item.amount # множу ціну на калькість замовлень
+                item.save()
+                total_amount += item.total_price
 
         context["cart"] = cart
         context["total_amount"] = total_amount
-        print(
-            f"Meal: {item.meal.title}, price: {item.meal.price}, amount: {item.amount}, total_price: {item.total_price}")
-
         return context
 
     def get_queryset(self):

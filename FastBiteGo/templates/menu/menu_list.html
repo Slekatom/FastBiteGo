@@ -1,4 +1,10 @@
 {% if user.is_authenticated %}
+
+<form method="get">
+  {{ filter_form.as_p }}
+  <button type="submit">Фільтрувати</button>
+</form>
+
 {% for i in categories %}
   <h2>{{ i.title }}</h2>
     {% for meal in i.meal_set.all %}
