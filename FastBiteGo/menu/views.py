@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Q
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.views.generic import TemplateView, RedirectView
@@ -25,7 +26,10 @@ class MenuList(ListView):
         if self.search_form.is_valid():
             searched = self.search_form.cleaned_data.get("title")
             if searched:
-                queryset = queryset.filter(title__icontains=searched)
+                queryset = queryset.filter(
+                    Q(title__icontains=searched) |
+                    Q(meal__title__icontains=searched)
+                ).distinct()
         return queryset
 
     def get_context_data(self, **kwargs):
