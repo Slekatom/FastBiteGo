@@ -16,11 +16,18 @@ class OrderCreateView(CreateView):
 
         cart, created = Cart.objects.get_or_create(status="In progress", user=self.request.user)
 
-        CartItems.objects.create(
-            cart=cart,
-            meal=order.meal,
-        )
-        return super().form_valid(form)
+        meal = order.meal
+        if meal.stock < 1:
+            form.add_error(None, "Немає достатньо товару в наявності.")
+            return self.form_invalid(form)
+        else:
+            cartitem = CartItems.objects.create(
+                cart=cart,
+                meal=order.meal,
+            )
+            meal.stock -= cartitem.amount
+            meal.save()
+            return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy("cart:cart")
@@ -55,6 +62,8 @@ def remove_order(request, item_id):
     if request.method == "POST":
         order = get_object_or_404(CartItems, id=item_id)
         order.delete()
+        order.meal.stock += order.amount
+        order.meal.save()
     return redirect("cart:cart")
 
 class CartView(ListView):
