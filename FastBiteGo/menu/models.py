@@ -24,6 +24,7 @@ class Meal(models.Model):
     price = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank = True, null = True)
     type = models.CharField(max_length=30, choices=TYPE, default="Default")
+    stock = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.title} in category {self.category}"
