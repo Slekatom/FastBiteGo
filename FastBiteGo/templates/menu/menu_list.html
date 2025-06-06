@@ -13,7 +13,11 @@
 {% for i in categories %}
   <h2>{{ i.title }}</h2>
     {% for meal in i.meal_set.all %}
+
     <p>{{ meal.title }}</p>
+    {% if meal.type == "Trending" %}
+    <h1>Trending</h1>
+    {% endif %}
 <img src="{{ meal.media.url }}" alt="{{ meal.title }}">
 {% endfor %}
 {% endfor %}
