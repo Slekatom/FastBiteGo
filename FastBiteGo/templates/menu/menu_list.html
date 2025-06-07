@@ -1,8 +1,28 @@
 {% if user.is_authenticated %}
+
+<form method="get">
+  {{ filter_form.as_p }}
+  <button type="submit">Фільтрувати</button>
+</form>
+
+<form method="get">
+  {{ search.as_p }}
+  <button type="submit">Фільтрувати</button>
+</form>
+
 {% for i in categories %}
   <h2>{{ i.title }}</h2>
     {% for meal in i.meal_set.all %}
+
     <p>{{ meal.title }}</p>
+    {% if meal.stock > 0 %}
+    <h1>В наявності</h1>
+    {% else %}
+  <h1>Закінчилося</h1>
+    {% endif %}
+    {% if meal.type == "Trending" %}
+    <h1>Trending</h1>
+    {% endif %}
 <img src="{{ meal.media.url }}" alt="{{ meal.title }}">
 {% endfor %}
 {% endfor %}

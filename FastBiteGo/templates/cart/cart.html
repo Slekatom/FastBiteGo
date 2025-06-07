@@ -1,0 +1,36 @@
+<h2>Ваш кошик</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {{ formset.management_form }}
+
+  <table>
+    <tr>
+      <th>Страва</th>
+      <th>Кількість</th>
+      <th>Ціна</th>
+      <th>Сума</th>
+      <th>Дії</th>
+    </tr>
+
+    {% for form in formset %}
+      <tr>
+        {{ form.id }}
+        <td>{{ form.instance.meal.title }}</td>
+        <td>{{ form.amount }}</td>
+        <td>{{ form.instance.meal.price }} грн</td>
+        <td>{{ form.instance.total_price }} грн</td>
+        <td>
+          <button type="submit" name="delete" value="{{ form.instance.id }}">❌ Удалить</button>
+        </td>
+      </tr>
+      {% if form.non_field_errors %}
+        <tr><td colspan="5" style="color:red;">{{ form.non_field_errors }}</td></tr>
+      {% endif %}
+    {% endfor %}
+  </table>
+
+  <p><strong>Загальна сума:</strong> {{ total_amount }} грн</p>
+  <button type="submit" name="update" value="1">Оновити кількість</button>
+</form>
+
