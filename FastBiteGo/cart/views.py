@@ -28,8 +28,6 @@ class OrderCreateView(CreateView):
                 cart=cart,
                 meal=order.meal,
             )
-            meal.stock -= cartitem.amount
-            meal.save()
             return super().form_valid(form)
 
     def get_success_url(self):
@@ -61,13 +59,13 @@ class OrderByIdCreateView(CreateView):
     def get_success_url(self):
         return reverse_lazy("cart:cart")
 
-def remove_order(request, item_id):
-    if request.method == "POST":
-        order = get_object_or_404(CartItems, id=item_id)
-        order.delete()
-        order.meal.stock += order.amount
-        order.meal.save()
-    return redirect("cart:cart")
+# def remove_order(request, item_id):
+#     if request.method == "POST":
+#         order = get_object_or_404(CartItems, id=item_id)
+#         order.delete()
+#         order.meal.stock += order.amount
+#         order.meal.save()
+#     return redirect("cart:cart")
 
 CartItemFormSet = modelformset_factory(
     CartItems,
@@ -112,6 +110,8 @@ class CartView(ListView):
             item_id = request.POST.get('delete')
             item_to_delete = get_object_or_404(CartItems, id=item_id, cart=cart)
             item_to_delete.delete()
+            item_to_delete.meal.progress_stock = item_to_delete.meal.stock
+            item_to_delete.meal.save()
             return redirect('cart:cart')
 
         elif 'update' in request.POST:
@@ -129,6 +129,8 @@ class CartView(ListView):
                     else:
                         item.total_price = item.amount * item.meal.price
                         item.save()
+                        item.meal.progress_stock = item.meal.stock - item.amount
+                        item.meal.save()
                         total_amount += item.total_price
 
                 if not formset.non_form_errors() and all(not f.errors for f in formset):
