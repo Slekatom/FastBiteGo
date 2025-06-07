@@ -4,6 +4,9 @@ from django.urls import reverse, reverse_lazy
 from .models import *
 from django.shortcuts import get_object_or_404, redirect
 from menu.models import Meal
+from django.forms import modelformset_factory
+from django.shortcuts import render
+
 
 class OrderCreateView(CreateView):
     model = Order
@@ -66,28 +69,74 @@ def remove_order(request, item_id):
         order.meal.save()
     return redirect("cart:cart")
 
+CartItemFormSet = modelformset_factory(
+    CartItems,
+    form=CartItemForm,
+    extra=0
+)
+
 class CartView(ListView):
     model = CartItems
     template_name = "cart/cart.html"
-    context_object_name = "order"
-
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        cart, created = Cart.objects.get_or_create(user = self.request.user, status = "In progress")
-        total_amount = 0
-        if cart.items.all():
-            for item in cart.items.all():
-                item.total_price = item.meal.price * item.amount # множу ціну на калькість замовлень
-                item.save()
-                total_amount += item.total_price
-
-        context["cart"] = cart
-        context["total_amount"] = total_amount
-        return context
+    context_object_name = "items"
 
     def get_queryset(self):
         cart, _ = Cart.objects.get_or_create(user=self.request.user, status="In progress")
-        return cart.items.all()
+        return cart.items.select_related('meal').all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        items = context['items']
+
+        total_amount = sum(item.meal.price * item.amount for item in items)
+
+        CartItemFormSet = modelformset_factory(CartItems, form=CartItemForm, extra=0)
+        formset = CartItemFormSet(queryset=items)
+
+        context.update({
+            'cart': items.first().cart if items.exists() else None,
+            'total_amount': total_amount,
+            'formset': formset,
+        })
+        return context
+
+    def post(self, request, *args, **kwargs):
+        cart = Cart.objects.filter(user=request.user, status="In progress").first()
+        items = CartItems.objects.filter(cart=cart)
+
+        CartItemFormSet = modelformset_factory(CartItems, form=CartItemForm, extra=0)
+        formset = CartItemFormSet(request.POST, queryset=items)
+
+        total_amount = 0
+
+        if formset.is_valid():
+            for form in formset:
+                print(f"Received amount: {form.cleaned_data.get('amount')}")
+                item = form.save(commit=False)
+                original = CartItems.objects.get(pk=item.pk)
+                item.meal = original.meal
+                item.cart = original.cart
+
+                if item.amount > item.meal.stock:
+                    form.add_error('amount', 'Немає стільки на складі')
+                else:
+                    item.total_price = item.amount * item.meal.price
+                    item.save()
+
+            if not formset.non_form_errors() and all(not f.errors for f in formset):
+                return redirect('cart:cart')
+        else:
+            print(formset.errors)
+            print(formset.non_form_errors())
+            for form in formset:
+                print(form.errors)
+            total_amount = sum(item.meal.price * item.amount for item in items)
+
+        return render(request, self.template_name, {
+            'formset': formset,
+            'cart': cart,
+            'total_amount': total_amount,
+        })
+
 
 

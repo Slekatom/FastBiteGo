@@ -1,20 +1,42 @@
+<h2>Ваш кошик</h2>
 
+<form method="post">
+  {% csrf_token %}
+  {{ formset.management_form }}
 
-<p>{{ cart }}</p>
+  <table>
+    <tr>
+      <th>Страва</th>
+      <th>Кількість</th>
+      <th>Ціна</th>
+      <th>Сума</th>
+      <th>Дії</th>
+    </tr>
 
-{% for i in order %}
-{{ i.meal.title }}
-Price: {{ i.total_price }}
+    {% for form in formset %}
+      <tr>
+        {{ form.id }}  {# <- ОБОВ’ЯЗКОВО hidden поле id #}
+        <td>{{ form.instance.meal.title }}</td>
+        <td>{{ form.amount }}</td>
+        <td>{{ form.instance.meal.price }} грн</td>
+        <td>{{ form.instance.total_price }} грн</td>
+        <td>
+          {% if form.instance.id %}
+            <form method="post" action="{% url 'cart:remove' form.instance.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit">❌ Удалить</button>
+            </form>
+          {% endif %}
+        </td>
+      </tr>
 
+      {% if form.non_field_errors %}
+        <tr><td colspan="5" style="color:red;">{{ form.non_field_errors }}</td></tr>
+      {% endif %}
+    {% endfor %}
+  </table>
 
-<form method="post" action="{% url 'cart:remove' i.id %}" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit">❌ Удалить</button>
+  <p><strong>Загальна сума:</strong> {{ total_amount }} грн</p>
+  <button type="submit">Оновити кількість</button>
 </form>
-
-{% empty %}
-  <p>Корзина пуста.</p>
-
-{% endfor %}
-{{ total_amount }}
 
