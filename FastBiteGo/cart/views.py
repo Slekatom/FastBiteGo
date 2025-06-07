@@ -100,43 +100,50 @@ class CartView(ListView):
         })
         return context
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         cart = Cart.objects.filter(user=request.user, status="In progress").first()
-        items = CartItems.objects.filter(cart=cart)
+        cart_items = CartItems.objects.filter(cart=cart)
 
         CartItemFormSet = modelformset_factory(CartItems, form=CartItemForm, extra=0)
-        formset = CartItemFormSet(request.POST, queryset=items)
+        formset = CartItemFormSet(request.POST, queryset=cart_items)
 
-        total_amount = 0
+        if 'delete' in request.POST:
+            # Кнопка удаления нажата
+            item_id = request.POST.get('delete')
+            item_to_delete = get_object_or_404(CartItems, id=item_id, cart=cart)
+            item_to_delete.delete()
+            return redirect('cart:cart')
 
-        if formset.is_valid():
-            for form in formset:
-                print(f"Received amount: {form.cleaned_data.get('amount')}")
-                item = form.save(commit=False)
-                original = CartItems.objects.get(pk=item.pk)
-                item.meal = original.meal
-                item.cart = original.cart
+        elif 'update' in request.POST:
+            # Обновление количества
+            total_amount = 0
+            if formset.is_valid():
+                for form in formset:
+                    item = form.save(commit=False)
+                    original = CartItems.objects.get(pk=item.pk)
+                    item.meal = original.meal
+                    item.cart = original.cart
 
-                if item.amount > item.meal.stock:
-                    form.add_error('amount', 'Немає стільки на складі')
-                else:
-                    item.total_price = item.amount * item.meal.price
-                    item.save()
+                    if item.amount > item.meal.stock:
+                        form.add_error('amount', 'Немає стільки на складі')
+                    else:
+                        item.total_price = item.amount * item.meal.price
+                        item.save()
+                        total_amount += item.total_price
 
-            if not formset.non_form_errors() and all(not f.errors for f in formset):
-                return redirect('cart:cart')
-        else:
-            print(formset.errors)
-            print(formset.non_form_errors())
-            for form in formset:
-                print(form.errors)
-            total_amount = sum(item.meal.price * item.amount for item in items)
+                if not formset.non_form_errors() and all(not f.errors for f in formset):
+                    return redirect('cart:cart')
 
-        return render(request, self.template_name, {
-            'formset': formset,
-            'cart': cart,
-            'total_amount': total_amount,
-        })
+            # если невалидно — рендерим с ошибками
+            return render(request, self.template_name, {
+                'formset': formset,
+                'cart': cart,
+                'total_amount': total_amount,
+            })
+
+        # На всякий случай редирект
+        return redirect('cart:cart')
+
 
 
 
