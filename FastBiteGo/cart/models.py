@@ -17,25 +17,11 @@ class Cart(models.Model):
         ("In progress", "In progress"),
         ("History", "History"),
     ]
-    CONFIRMED_STATUS = [
-        ("Not Confirmed", "Not Confirmed"),
-        ("Confirmed", "Confirmed")
-    ]
-    PURCHASE = [
-        ("Purchased", "Purchased"),
-        ("Not Purchased", "Not Purchased"),
-    ]
-    ARRIVE_STATUS = [
-        ("Arrived", "Arrived"),
-        ("Not Arrived", "Not Arrived")
-    ]
+
 
     date_time = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20, choices=STATUS, default = "In progress")
     user = models.ForeignKey(user, on_delete=models.CASCADE, default=None)
-    confirmed_status = models.CharField(max_length=30, choices=CONFIRMED_STATUS, default="Not Confirmed")
-    purchase = models.CharField(max_length=30, choices=PURCHASE, default="Not Purchased")
-    arrive_status = models.CharField(max_length=30, choices=ARRIVE_STATUS, default="Not Arrived")
 
     def __str__(self):
         return f"{self.date_time} was created a new cart ({self.status})"

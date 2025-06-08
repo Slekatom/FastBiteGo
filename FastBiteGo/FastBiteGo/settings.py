@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'landing',
     'templatetags',
     "accounts",
+    "payment",
 ]
 
 MIDDLEWARE = [
