@@ -5,5 +5,6 @@ app_name = "menu"
 
 urlpatterns = [
     path('', views.MenuList.as_view(), name = "landing"),
-    path("<int:pk>/", views.CategoryDetailView.as_view(), name = "meals"),
+    path("category/<int:pk>/", views.CategoryDetailView.as_view(), name = "category"),
+    path("meal/<int:pk>/", views.MealDetailView.as_view(), name = "meal")
 ]

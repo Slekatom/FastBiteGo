@@ -48,3 +48,18 @@ class CategoryDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["category"] = category
         return context
+
+class MealDetailView(DetailView):
+    model = Meal
+    template_name = "menu/meal.html"
+    context_object_name = "data"
+
+    def get_context_data(self, **kwargs):
+        meal = self.get_object()
+        context = super().get_context_data(**kwargs)
+        context["meal"] = meal
+        return context
+
+# class RatingCreateView(CreateView):
+#     model = Review
+#     template_name = ""
