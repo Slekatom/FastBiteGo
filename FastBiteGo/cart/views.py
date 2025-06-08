@@ -1,3 +1,5 @@
+from django.contrib.admin.templatetags.admin_list import items_for_result
+from django.shortcuts import get_list_or_404
 from .forms import *
 from django.views.generic import CreateView, FormView, DetailView, TemplateView, UpdateView, DeleteView, ListView
 from django.urls import reverse, reverse_lazy
@@ -92,7 +94,6 @@ class CartView(ListView):
         formset = CartItemFormSet(queryset=items)
 
         context.update({
-            'cart': items.first().cart if items.exists() else None,
             'total_amount': total_amount,
             'formset': formset,
         })
@@ -136,15 +137,32 @@ class CartView(ListView):
                 if not formset.non_form_errors() and all(not f.errors for f in formset):
                     return redirect('cart:cart')
 
-            # если невалидно — рендерим с ошибками
             return render(request, self.template_name, {
                 'formset': formset,
                 'cart': cart,
                 'total_amount': total_amount,
             })
 
-        # На всякий случай редирект
         return redirect('cart:cart')
+
+class HistoryView(ListView):
+    model = CartItems
+    template_name = "cart/history.html"
+    context_object_name = "items"
+
+    def get_queryset(self):
+        cart, _ = Cart.objects.get_or_create(user=self.request.user, status="In progress")
+        return cart.items.select_related('meal').all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        history = get_list_or_404(Cart, user = self.request.user, status = "History")
+        cartitems = get_list_or_404(CartItems)
+        context["history"] = history
+        context["cartitems"] = cartitems
+        return context
+
+
 
 
 
