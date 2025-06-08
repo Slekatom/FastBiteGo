@@ -1,4 +1,3 @@
-from django.contrib.admin.templatetags.admin_list import items_for_result
 from django.shortcuts import get_list_or_404
 from .forms import *
 from django.views.generic import CreateView, FormView, DetailView, TemplateView, UpdateView, DeleteView, ListView
@@ -161,6 +160,21 @@ class HistoryView(ListView):
         context["history"] = history
         context["cartitems"] = cartitems
         return context
+
+def reorder(request, cart_id):
+    cart = get_object_or_404(Cart, id = cart_id, status = "History")
+    new_cart = get_object_or_404(Cart, status = "In progress")
+
+    new_cart.items.all().delete()
+
+    for item in cart.items.all():
+        CartItems.objects.create(
+            cart = new_cart,
+            meal = item.meal,
+            amount = item.amount
+        )
+    return redirect('cart:cart')
+
 
 
 

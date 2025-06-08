@@ -9,4 +9,5 @@ urlpatterns = [
     #path("<int:item_id>/remove", remove_order, name = "remove"),
     path("", CartView.as_view(), name = "cart"),
     path("history/", HistoryView.as_view(), name = "history"),
+    path("reorder/<int:cart_id>", reorder, name = "reorder"),
 ]
