@@ -8,4 +8,5 @@ urlpatterns = [
     path("order/<int:pk>", OrderByIdCreateView.as_view(), name = "order_by_id"),
     #path("<int:item_id>/remove", remove_order, name = "remove"),
     path("", CartView.as_view(), name = "cart"),
+    path("history/", HistoryView.as_view(), name = "history"),
 ]

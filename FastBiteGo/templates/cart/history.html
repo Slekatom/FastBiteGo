@@ -1,0 +1,9 @@
+{% for cart in history %}
+<h1>{{ cart }}</h1>
+{% for cartitem in cartitems %}
+{% if cartitem.cart == cart %}
+<h2> {{ cartitem.meal }} </h2>
+{% endif %}
+
+{% endfor %}
+{% endfor %}
