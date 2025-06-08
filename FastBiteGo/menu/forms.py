@@ -10,7 +10,7 @@ class MenuFilterForm(forms.Form):
 class Search(forms.Form):
     title = forms.CharField(max_length=30)
 
-class Review(forms.ModelForm):
+class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ["title", "rating"]
