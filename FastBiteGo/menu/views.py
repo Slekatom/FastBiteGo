@@ -63,7 +63,7 @@ class MealDetailView(DetailView):
 
 class ReviewCreateView(CreateView):
     model = Review
-    template_name = "menu/meal.html"
+    template_name = "menu/meal_review.html"
     form_class = ReviewForm
 
     def form_valid(self, form):
