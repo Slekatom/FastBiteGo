@@ -1,36 +1,120 @@
-<h2>Ваш кошик</h2>
+<h2 style="
+  text-align: center;
+  color: #ff6f00;
+  font-size: 2.4rem;
+  margin-bottom: 2rem;
+  font-weight: 800;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-bottom: 4px solid #ff6f00;
+  padding-bottom: 0.5rem;
+  letter-spacing: 1.2px;
+  user-select: none;
+  ">
+  🛒 Ваш кошик
+</h2>
 
-<form method="post">
+<form method="post" style="
+  max-width: 850px;
+  margin: 0 auto 3rem auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  color: #222;
+  ">
   {% csrf_token %}
   {{ formset.management_form }}
 
-  <table>
-    <tr>
-      <th>Страва</th>
-      <th>Кількість</th>
-      <th>Ціна</th>
-      <th>Сума</th>
-      <th>Дії</th>
-    </tr>
-
-    {% for form in formset %}
-      <tr>
+  <table style="
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+  ">
+    <thead>
+      <tr style="background-color: #ff6f00; color: white; text-align: left; border-radius: 12px;">
+        <th style="padding: 14px 16px; border-top-left-radius: 12px;">Страва</th>
+        <th style="padding: 14px 16px; width: 120px;">Кількість</th>
+        <th style="padding: 14px 16px; width: 120px;">Ціна</th>
+        <th style="padding: 14px 16px; width: 120px;">Сума</th>
+        <th style="padding: 14px 16px; width: 140px; border-top-right-radius: 12px;">Дії</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for form in formset %}
+      <tr style="
+        background: #fff7e6;
+        box-shadow: 0 3px 6px rgba(255,111,0,0.15);
+        border-radius: 12px;
+        vertical-align: middle;
+        ">
         {{ form.id }}
-        <td>{{ form.instance.meal.title }}</td>
-        <td>{{ form.amount }}</td>
-        <td>{{ form.instance.meal.price }} грн</td>
-        <td>{{ form.instance.total_price }} грн</td>
-        <td>
-          <button type="submit" name="delete" value="{{ form.instance.id }}">❌ Удалить</button>
+        <td style="padding: 14px 16px; font-weight: 600; color: #444;">{{ form.instance.meal.title }}</td>
+        <td style="padding: 14px 16px;">{{ form.amount }}</td>
+        <td style="padding: 14px 16px; color: #ff6f00; font-weight: 700;">{{ form.instance.meal.price }} грн</td>
+        <td style="padding: 14px 16px; font-weight: 700; color: #d35400;">{{ form.instance.total_price }} грн</td>
+        <td style="padding: 14px 16px;">
+          <button type="submit" name="delete" value="{{ form.instance.id }}" style="
+            background-color: #e63946;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(230,57,70,0.35);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            user-select: none;
+          "
+          onmouseover="this.style.backgroundColor='#b32a35'; this.style.transform='scale(1.05)';"
+          onmouseout="this.style.backgroundColor='#e63946'; this.style.transform='scale(1)';"
+          >
+            ❌ Видалити
+          </button>
         </td>
       </tr>
       {% if form.non_field_errors %}
-        <tr><td colspan="5" style="color:red;">{{ form.non_field_errors }}</td></tr>
+      <tr>
+        <td colspan="5" style="color:red; padding: 8px 16px; font-size: 0.9rem;">
+          {{ form.non_field_errors }}
+        </td>
+      </tr>
       {% endif %}
-    {% endfor %}
+      {% endfor %}
+    </tbody>
   </table>
 
-  <p><strong>Загальна сума:</strong> {{ total_amount }} грн</p>
-  <button type="submit" name="update" value="1">Оновити кількість</button>
-</form>
+  <p style="
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-align: right;
+    margin-bottom: 2.5rem;
+    letter-spacing: 0.8px;
+  ">
+    Загальна сума: <span style="color: #ff6f00;">{{ total_amount }} грн</span>
+  </p>
 
+  <button type="submit" name="update" value="1" style="
+    display: block;
+    width: 100%;
+    background-color: #ff6f00;
+    color: white;
+    border: none;
+    padding: 16px 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    border-radius: 36px;
+    cursor: pointer;
+    box-shadow: 0 8px 22px rgba(255,111,0,0.5);
+    transition: background-color 0.3s ease, transform 0.25s ease;
+    user-select: none;
+  "
+  onmouseover="this.style.backgroundColor='#e65c00'; this.style.transform='scale(1.06)';"
+  onmouseout="this.style.backgroundColor='#ff6f00'; this.style.transform='scale(1)';"
+  >
+    🔄 Оновити кількість
+  </button>
+</form>

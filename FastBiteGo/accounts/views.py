@@ -61,6 +61,10 @@ class MyProfileUpdate(UpdateView):
     template_name = "accounts/update.html"
     fields = ["first_name", "last_name", "description", "birthdate", "address", "phone", "image"]
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        return response
+
     def get_object(self, queryset=None):
         return self.request.user
 

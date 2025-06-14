@@ -119,7 +119,7 @@
       <div>Тип<br><span class="text-muted">{{ meal.type }}</span></div>
     </div>
 
-    {% if meal.stock > 1 %}
+    {% if meal.stock >= 1 %}
       <div class="stock-status">В наявності</div>
       <br>
     <button

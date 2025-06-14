@@ -58,10 +58,19 @@ class OrderByIdCreateView(CreateView):
 
         cart, created = Cart.objects.get_or_create(user = self.request.user, status = "In progress")
 
-        CartItems.objects.create(
-            cart=cart,
-            meal=order.meal
-        )
+        if meal.stock < 1:
+            form.add_error(None, "Немає достатньо товару в наявності.")
+            return self.form_invalid(form)
+        else:
+            cartitem_search = CartItems.objects.filter(cart=cart, meal=meal)
+            if not cartitem_search.exists():
+                CartItems.objects.create(
+                    cart=cart,
+                    meal=meal,
+                )
+            else:
+                form.add_error(None, "Товар вже у кошику.")
+                return self.form_invalid(form)
         return super().form_valid(form)
 
     def get_success_url(self):

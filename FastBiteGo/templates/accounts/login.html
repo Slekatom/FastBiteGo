@@ -1,6 +1,10 @@
-<h2>Вхід</h2>
-<form method="post">
+
+{% block content %}
+<h2 style="text-align:center; color:#ff6f00;">🔐 Вхід</h2>
+<form method="post" style="max-width:400px;margin:0 auto;background:#fff;padding:2rem;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.1);">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Увійти</button>
+  <button type="submit" style="width:100%;padding:12px;background-color:#ff6f00;color:#fff;border:none;border-radius:25px;font-weight:bold;font-size:1rem;cursor:pointer;">Увійти</button>
 </form>
+<p style="text-align:center;margin-top:1rem;">Не маєте акаунту? <a href="{% url 'accounts:register' %}">Зареєструватися</a></p>
+{% endblock %}
