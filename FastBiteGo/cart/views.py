@@ -25,10 +25,17 @@ class OrderCreateView(CreateView):
             form.add_error(None, "Немає достатньо товару в наявності.")
             return self.form_invalid(form)
         else:
-            cartitem = CartItems.objects.create(
-                cart=cart,
-                meal=order.meal,
-            )
+            cartitem_search = CartItems.objects.filter(cart=cart, meal=meal)
+            if not cartitem_search.exists():
+                CartItems.objects.create(
+                    cart=cart,
+                    meal=meal,
+                )
+            else:
+                form.add_error(None, "Товар вже у кошику.")
+                return self.form_invalid(form)
+
+
             return super().form_valid(form)
 
     def get_success_url(self):
