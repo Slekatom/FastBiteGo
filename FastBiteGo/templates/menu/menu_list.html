@@ -1,29 +1,395 @@
 {% if user.is_authenticated %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Меню страв</title>
+  <style>
+    /* Твой CSS */
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto 4rem;
+      padding: 0 1rem;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      position: relative;
+      z-index: 1;
+    }
 
-<form method="get">
-  {{ filter_form.as_p }}
-  <button type="submit">Фільтрувати</button>
-</form>
+    /* Контейнер для обох форм в рядок */
+    .forms-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
 
-<form method="get">
-  {{ search.as_p }}
-  <button type="submit">Фільтрувати</button>
-</form>
+    form {
+      background: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgb(0 0 0 / 0.07);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-{% for i in categories %}
-  <h2>{{ i.title }}</h2>
-    {% for meal in i.meal_set.all %}
+    form label {
+      font-weight: 600;
+      margin: 0;
+      min-width: 70px;
+      font-size: 0.9rem;
+    }
 
-    <p>{{ meal.title }}</p>
+    form select, form input[type="text"] {
+      padding: 6px 8px;
+      font-size: 0.9rem;
+      border: 1.3px solid #ccc;
+      border-radius: 6px;
+      min-width: 160px;
+      max-width: 220px;
+      transition: border-color 0.3s ease;
+    }
+
+    form select:focus, form input[type="text"]:focus {
+      border-color: #ff6f00;
+      outline: none;
+    }
+
+    form button {
+      background-color: #ff6f00;
+      border: none;
+      color: white;
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.25s ease;
+      white-space: nowrap;
+    }
+
+    form button:hover {
+      background-color: #e65c00;
+    }
+
+    /* Сітка для страв */
+    .meals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .meal-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 3px 12px rgb(0 0 0 / 0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s ease;
+    }
+
+    .meal-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 28px rgb(0 0 0 / 0.15);
+    }
+
+    .meal-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .meal-info {
+      padding: 12px 14px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #222;
+    }
+
+    .status {
+      margin-top: auto;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      width: fit-content;
+    }
+
+    .in-stock {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    .out-stock {
+      background-color: #d32f2f;
+      color: white;
+    }
+
+    .trending-badge {
+      background-color: #ff6f00;
+      color: white;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 5px 12px;
+      border-radius: 30px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      box-shadow: 0 2px 10px rgb(255 111 0 / 0.5);
+    }
+
+    .meal-card.trending {
+      position: relative;
+    }
+
+    .trending-section h2,
+    .category-section h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #ff6f00;
+      border-bottom: 3px solid #ff6f00;
+      padding-bottom: 6px;
+    }
+
+    @media (max-width: 650px) {
+      .forms-row {
+        flex-direction: column;
+        gap: 14px;
+      }
+      form select, form input[type="text"] {
+        max-width: 100%;
+        min-width: auto;
+        width: 100%;
+      }
+    }
+
+    /* Стили для canvas (фон с частицами) */
+    #bg-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      background: transparent;
+    }
+    .meal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 14px;
+  flex-grow: 1;
+
+  /* Центрируем всё содержимое */
+  align-items: center;
+  text-align: center;
+}
+
+.btn-view-meal {
+  background-color: #ff6f00;
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 25px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255, 111, 0, 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+  /* Центрируем кнопку в контейнере */
+  align-self: center;
+}
+
+.btn-view-meal:hover,
+.btn-view-meal:focus {
+  background-color: #e65c00;
+  box-shadow: 0 6px 16px rgba(230, 92, 0, 0.6);
+  outline: none;
+}
+
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="container">
+    <div class="forms-row">
+      <form method="get" novalidate>
+        <label for="id_category">Категорія</label>
+        {{ filter_form.category }}
+        <button type="submit">Фільтрувати</button>
+      </form>
+
+      <form method="get" novalidate>
+        <label for="id_title">Пошук</label>
+        {{ search.title }}
+        <button type="submit">Шукати</button>
+      </form>
+    </div>
+
+    <section class="trending-section">
+      <h2>🔥 Трендові страви</h2>
+      <div class="meals-grid">
+        {% for category in categories %}
+          {% for meal in category.meal_set.all %}
+            {% if meal.type == "Trending" %}
+              <div class="meal-card trending">
+                <img src="{{ meal.media.url }}" alt="{{ meal.title }}" class="meal-img" />
+                <div class="meal-info">
+                  <h3 class="meal-title">{{ meal.title }}</h3>
+                  {% if meal.stock > 0 %}
+                    <span class="status in-stock">В наявності</span>
+                  {% else %}
+                    <span class="status out-stock">Закінчилося</span>
+                  {% endif %}
+                  <button
+      onclick="window.location.href='{% url 'menu:meal' meal.id %}'"
+      class="btn-view-meal"
+      type="button"
+    >
+      Переглянути страву
+    </button>
+
+
+                </div>
+                <span class="trending-badge">Trending</span>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </div>
+    </section>
+
+    {% for category in categories %}
+    <section class="category-section">
+      <h2>{{ category.title }}</h2>
+      <div class="meals-grid">
+        {% for meal in category.meal_set.all %}
+          {% if meal.type != "Trending" %}
+            <div class="meal-card">
+  <img src="{{ meal.media.url }}" alt="{{ meal.title }}" class="meal-img" />
+  <div class="meal-info">
+    <h3 class="meal-title">{{ meal.title }}</h3>
     {% if meal.stock > 0 %}
-    <h1>В наявності</h1>
+      <span class="status in-stock">В наявності</span>
     {% else %}
-  <h1>Закінчилося</h1>
+      <span class="status out-stock">Закінчилося</span>
     {% endif %}
-    {% if meal.type == "Trending" %}
-    <h1>Trending</h1>
-    {% endif %}
-<img src="{{ meal.media.url }}" alt="{{ meal.title }}">
-{% endfor %}
-{% endfor %}
+
+    <button
+      onclick="window.location.href='{% url 'menu:meal' meal.id %}'"
+      class="btn-view-meal"
+      type="button"
+    >
+      Переглянути страву
+    </button>
+  </div>
+</div>
+
+          {% endif %}
+        {% endfor %}
+      </div>
+    </section>
+    {% endfor %}
+  </div>
+
+  <script>
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height;
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.radius = 2 + Math.random() * 2;
+      }
+
+      move() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(255,111,0,0.6)'; // оранжевый цвет с прозрачностью
+        ctx.fill();
+      }
+    }
+
+    const particlesCount = 60;
+    const particles = [];
+
+    for (let i = 0; i < particlesCount; i++) {
+      particles.push(new Particle());
+    }
+
+    function connectParticles() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 150) {
+            ctx.strokeStyle = `rgba(255,111,0,${1 - dist / 150})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach(p => {
+        p.move();
+        p.draw();
+      });
+
+      connectParticles();
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
+
+{% else %}
+<p style="text-align:center; margin-top: 3rem; color: #666; font-size: 1.2rem;">
+  Будь ласка, <a href="{% url 'login' %}" style="color:#ff6f00; font-weight:700; text-decoration:none;">увійдіть</a>, щоб побачити меню.
+</p>
 {% endif %}
