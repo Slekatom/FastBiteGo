@@ -150,13 +150,115 @@
     background-color: #05875f;
     transform: scale(1.07);
   }
-</style>
 
-<h2 class="cart-title">🛒 Ваш кошик</h2>
+  .add-btn-top-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+button.add-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 52px;
+  height: 52px;
+  font-size: 2.3rem;
+  font-weight: 900;
+  color: white;
+  background-color: #06a77d;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(6,167,125,0.5);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  user-select: none;
+}
+
+button.add-btn:hover {
+  background-color: #05875f;
+  transform: scale(1.12);
+}
+  .add-btn-top-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.2rem;
+}
+
+button.add-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 52px;
+  height: 52px;
+  font-size: 2.3rem;
+  font-weight: 900;
+  color: white;
+  background-color: #06a77d;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(6,167,125,0.5);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  user-select: none;
+}
+
+button.add-btn:hover {
+  background-color: #05875f;
+  transform: scale(1.12);
+}
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  max-width: 850px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cart-header .add-btn {
+  width: 52px;
+  height: 52px;
+  font-size: 2.3rem;
+  font-weight: 900;
+  color: white;
+  background-color: #06a77d;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(6,167,125,0.5);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  user-select: none;
+}
+
+.cart-header .add-btn:hover {
+  background-color: #05875f;
+  transform: scale(1.12);
+}
+
+.cart-header .total-amount {
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.cart-header .total-amount span {
+  color: #ff6f00;
+}
+
+
+</style>
+<div class="cart-header">
+  <h2 class="cart-title">🛒 Ваш кошик</h2>
+</div>
+
 
 <form method="post" class="cart-form">
   {% csrf_token %}
   {{ formset.management_form }}
+
 
   <table class="cart-table">
     <thead>
@@ -178,7 +280,7 @@
         <td>{{ form.instance.meal.price }} грн</td>
         <td>{{ form.instance.total_price }} грн</td>
         {% else %}
-      <td colspan="2" style="color: red;">Недостатньо товару на складі</td>
+        <td colspan="2" style="color: red;">Недостатньо товару на складі</td>
         {% endif %}
         <td>
           <button type="submit" name="delete" value="{{ form.instance.id }}" class="delete-btn">
@@ -196,13 +298,12 @@
       {% endfor %}
     </tbody>
   </table>
-
-  <p class="total-amount">
-
-
-    Загальна сума: <span>{{ total_amount }} грн</span>
-  </p>
-
+  <div class="cart-header">
+  <button type="button" onclick="window.location.href='{% url 'cart:order' %}'" class="add-btn" title="Додати нову страву">
+    +
+  </button>
+  <p class="total-amount">Загальна сума: <span>{{ total_amount }} грн</span></p>
+</div>
   <button type="submit" name="update" value="1" class="update-btn">
     🔄 Оновити корзину
   </button>
@@ -210,7 +311,9 @@
   <button type="button" onclick="window.location.href='{% url 'payment:payment' %}'" class="pay-btn">
     Оплатити
   </button>
+
   {{ form.amount.errors }}
 </form>
+
 
 
