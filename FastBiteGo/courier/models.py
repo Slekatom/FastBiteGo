@@ -6,6 +6,8 @@ User = CustomUser
 class Request(models.Model):
     STATUS = [("Is Taken", "Is Taken"),
               ("Queue", "Queue")]
+    FINISH_STATUS = [("Finished", "Finished"),
+                     ("Not Finished", "Not Finished")]
 
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="carts")
@@ -13,6 +15,7 @@ class Request(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now=True)
     status = models.CharField(choices=STATUS, max_length=40, default = "Queue")
+    is_finished = models.CharField(choices=FINISH_STATUS, max_length=40, default="Not Finished")
 
     def __str__(self):
         if self.status == "Is Taken":
