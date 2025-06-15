@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'templatetags',
     "accounts",
     "payment",
+    "courier",
 ]
 
 MIDDLEWARE = [
