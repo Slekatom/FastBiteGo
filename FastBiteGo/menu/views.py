@@ -57,8 +57,10 @@ class MealDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         meal = self.get_object()
+        reviews = Review.objects.filter(meal = meal)
         context = super().get_context_data(**kwargs)
         context["meal"] = meal
+        context["reviews"] = reviews
         return context
 
 class ReviewCreateView(CreateView):
