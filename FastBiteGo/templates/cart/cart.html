@@ -1,77 +1,187 @@
-<h2 style="
-  text-align: center;
-  color: #ff6f00;
-  font-size: 2.4rem;
-  margin-bottom: 2rem;
-  font-weight: 800;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  border-bottom: 4px solid #ff6f00;
-  padding-bottom: 0.5rem;
-  letter-spacing: 1.2px;
-  user-select: none;
-  ">
-  🛒 Ваш кошик
-</h2>
+<style>
+  /* Заголовок */
+  h2.cart-title {
+    text-align: center;
+    color: #ff6f00;
+    font-size: 2.8rem;
+    margin-bottom: 2.5rem;
+    font-weight: 900;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-bottom: 5px solid #ff6f00;
+    padding-bottom: 0.5rem;
+    letter-spacing: 1.4px;
+    user-select: none;
+  }
 
-<form method="post" style="
-  max-width: 850px;
-  margin: 0 auto 3rem auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #fff;
-  padding: 2rem 2.5rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-  color: #222;
-  ">
+  form.cart-form {
+    max-width: 850px;
+    margin: 0 auto 3rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff;
+    padding: 2.5rem 3rem;
+    border-radius: 20px;
+    box-shadow: 0 14px 30px rgba(255,111,0,0.15);
+    color: #222;
+  }
+
+  table.cart-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 14px;
+    margin-bottom: 2.5rem;
+    font-size: 1rem;
+  }
+
+  table.cart-table thead tr {
+    background-color: #ff6f00;
+    color: white;
+    text-align: left;
+    border-radius: 12px;
+  }
+
+  table.cart-table thead th {
+    padding: 16px 20px;
+  }
+
+  table.cart-table thead th:first-child {
+    border-top-left-radius: 12px;
+  }
+  table.cart-table thead th:last-child {
+    border-top-right-radius: 12px;
+  }
+
+  table.cart-table tbody tr {
+    background: #fff7e6;
+    box-shadow: 0 4px 8px rgba(255,111,0,0.2);
+    border-radius: 14px;
+    vertical-align: middle;
+    transition: background-color 0.3s ease;
+  }
+  table.cart-table tbody tr:hover {
+    background-color: #ffefd6;
+  }
+
+  table.cart-table tbody td {
+    padding: 14px 20px;
+  }
+  table.cart-table tbody td:first-child {
+    font-weight: 600;
+    color: #444;
+  }
+  table.cart-table tbody td:nth-child(3) {
+    color: #ff6f00;
+    font-weight: 700;
+  }
+  table.cart-table tbody td:nth-child(4) {
+    font-weight: 700;
+    color: #d35400;
+  }
+
+  /* Кнопка удалить */
+  button.delete-btn {
+    background-color: #e63946;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 24px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 5px 15px rgba(230,57,70,0.4);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    user-select: none;
+  }
+  button.delete-btn:hover {
+    background-color: #b32a35;
+    transform: scale(1.05);
+  }
+
+  /* Итоговая сумма */
+  p.total-amount {
+    font-size: 1.6rem;
+    font-weight: 900;
+    text-align: right;
+    margin-bottom: 3rem;
+    letter-spacing: 1px;
+  }
+  p.total-amount span {
+    color: #ff6f00;
+  }
+
+  /* Кнопка обновить */
+  button.update-btn {
+    display: block;
+    width: 100%;
+    background-color: #ff6f00;
+    color: white;
+    border: none;
+    padding: 18px 0;
+    font-size: 1.3rem;
+    font-weight: 900;
+    border-radius: 36px;
+    cursor: pointer;
+    box-shadow: 0 10px 26px rgba(255,111,0,0.55);
+    transition: background-color 0.3s ease, transform 0.25s ease;
+    user-select: none;
+    margin-bottom: 1.2rem;
+  }
+  button.update-btn:hover {
+    background-color: #e65c00;
+    transform: scale(1.07);
+  }
+
+  /* Кнопка оплатити */
+  button.pay-btn {
+    display: block;
+    width: 100%;
+    background-color: #06a77d;
+    color: white;
+    border: none;
+    padding: 18px 0;
+    font-size: 1.3rem;
+    font-weight: 900;
+    border-radius: 36px;
+    cursor: pointer;
+    box-shadow: 0 10px 26px rgba(6,167,125,0.55);
+    transition: background-color 0.3s ease, transform 0.25s ease;
+    user-select: none;
+  }
+  button.pay-btn:hover {
+    background-color: #05875f;
+    transform: scale(1.07);
+  }
+</style>
+
+<h2 class="cart-title">🛒 Ваш кошик</h2>
+
+<form method="post" class="cart-form">
   {% csrf_token %}
   {{ formset.management_form }}
 
-  <table style="
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 12px;
-    margin-bottom: 2rem;
-    font-size: 1rem;
-  ">
+  <table class="cart-table">
     <thead>
-      <tr style="background-color: #ff6f00; color: white; text-align: left; border-radius: 12px;">
-        <th style="padding: 14px 16px; border-top-left-radius: 12px;">Страва</th>
-        <th style="padding: 14px 16px; width: 120px;">Кількість</th>
-        <th style="padding: 14px 16px; width: 120px;">Ціна</th>
-        <th style="padding: 14px 16px; width: 120px;">Сума</th>
-        <th style="padding: 14px 16px; width: 140px; border-top-right-radius: 12px;">Дії</th>
+      <tr>
+        <th>Страва</th>
+        <th style="width: 120px;">Кількість</th>
+        <th style="width: 120px;">Ціна</th>
+        <th style="width: 120px;">Сума</th>
+        <th style="width: 140px;">Дії</th>
       </tr>
     </thead>
     <tbody>
       {% for form in formset %}
-      <tr style="
-        background: #fff7e6;
-        box-shadow: 0 3px 6px rgba(255,111,0,0.15);
-        border-radius: 12px;
-        vertical-align: middle;
-        ">
+      <tr>
         {{ form.id }}
-        <td style="padding: 14px 16px; font-weight: 600; color: #444;">{{ form.instance.meal.title }}</td>
-        <td style="padding: 14px 16px;">{{ form.amount }}</td>
-        <td style="padding: 14px 16px; color: #ff6f00; font-weight: 700;">{{ form.instance.meal.price }} грн</td>
-        <td style="padding: 14px 16px; font-weight: 700; color: #d35400;">{{ form.instance.total_price }} грн</td>
-        <td style="padding: 14px 16px;">
-          <button type="submit" name="delete" value="{{ form.instance.id }}" style="
-            background-color: #e63946;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 24px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 0.95rem;
-            box-shadow: 0 4px 12px rgba(230,57,70,0.35);
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            user-select: none;
-          "
-          onmouseover="this.style.backgroundColor='#b32a35'; this.style.transform='scale(1.05)';"
-          onmouseout="this.style.backgroundColor='#e63946'; this.style.transform='scale(1)';"
-          >
+        <td>{{ form.instance.meal.title }}</td>
+        <td>{{ form.amount }}</td>
+        {% if form.instance.meal.stock >= form.instance.amount %}
+        <td>{{ form.instance.meal.price }} грн</td>
+        <td>{{ form.instance.total_price }} грн</td>
+        {% else %}
+      <td colspan="2" style="color: red;">Недостатньо товару на складі</td>
+        {% endif %}
+        <td>
+          <button type="submit" name="delete" value="{{ form.instance.id }}" class="delete-btn">
             ❌ Видалити
           </button>
         </td>
@@ -87,34 +197,20 @@
     </tbody>
   </table>
 
-  <p style="
-    font-size: 1.5rem;
-    font-weight: 800;
-    text-align: right;
-    margin-bottom: 2.5rem;
-    letter-spacing: 0.8px;
-  ">
-    Загальна сума: <span style="color: #ff6f00;">{{ total_amount }} грн</span>
+  <p class="total-amount">
+
+
+    Загальна сума: <span>{{ total_amount }} грн</span>
   </p>
 
-  <button type="submit" name="update" value="1" style="
-    display: block;
-    width: 100%;
-    background-color: #ff6f00;
-    color: white;
-    border: none;
-    padding: 16px 0;
-    font-size: 1.2rem;
-    font-weight: 800;
-    border-radius: 36px;
-    cursor: pointer;
-    box-shadow: 0 8px 22px rgba(255,111,0,0.5);
-    transition: background-color 0.3s ease, transform 0.25s ease;
-    user-select: none;
-  "
-  onmouseover="this.style.backgroundColor='#e65c00'; this.style.transform='scale(1.06)';"
-  onmouseout="this.style.backgroundColor='#ff6f00'; this.style.transform='scale(1)';"
-  >
-    🔄 Оновити кількість
+  <button type="submit" name="update" value="1" class="update-btn">
+    🔄 Оновити корзину
   </button>
+
+  <button type="button" onclick="window.location.href='{% url 'payment:payment' %}'" class="pay-btn">
+    Оплатити
+  </button>
+  {{ form.amount.errors }}
 </form>
+
+
