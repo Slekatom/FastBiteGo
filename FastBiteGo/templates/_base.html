@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}Сайт доставки їжі{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    /* Базовые стили для body и шрифтов */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: #f0f4f8;
+      color: #2c3e50;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Хедер */
+    header {
+      background: linear-gradient(90deg, #ff6f00, #ffb84d);
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 10px rgba(255, 111, 0, 0.3);
+      color: white;
+    }
+
+    /* Навигация */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+
+    /* Логотип / название сайта */
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      user-select: none;
+      cursor: default;
+      letter-spacing: 1.5px;
+    }
+
+    /* Основное меню */
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    .nav-links li {
+      position: relative;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus {
+      background-color: rgba(255, 255, 255, 0.25);
+      outline: none;
+    }
+
+    /* Dropdown меню для Аккаунта */
+    .dropdown {
+      cursor: pointer;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 120%;
+      right: 0;
+      background: white;
+      color: #2c3e50;
+      min-width: 160px;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      display: none;
+      flex-direction: column;
+      padding: 0.5rem 0;
+      z-index: 1000;
+    }
+
+    .dropdown-menu a {
+      padding: 0.5rem 1rem;
+      color: #2c3e50;
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .dropdown-menu a:hover,
+    .dropdown-menu a:focus {
+      background-color: #ff6f00;
+      color: white;
+      outline: none;
+    }
+
+    .dropdown:hover .dropdown-menu,
+    .dropdown:focus-within .dropdown-menu {
+      display: flex;
+    }
+
+    /* Контейнер для основного контента */
+    main {
+      flex-grow: 1;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      width: 100%;
+    }
+
+    /* Футер (если нужен) */
+    footer {
+      background-color: #ff6f00;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      user-select: none;
+      font-weight: 600;
+    }
+
+    /* Адаптивность меню на маленьких экранах */
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .nav-links {
+        flex-direction: column;
+        gap: 0.8rem;
+        width: 100%;
+      }
+      .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        border-radius: 0;
+        background: transparent;
+        display: none;
+        padding: 0;
+      }
+      .dropdown:hover .dropdown-menu,
+      .dropdown:focus-within .dropdown-menu {
+        display: flex;
+        background: white;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        border-radius: 8px;
+        position: static;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav role="navigation" aria-label="Основне меню сайту">
+    <div class="nav-logo" aria-label="Логотип сайту">
+      FastBiteGo
+    </div>
+    <ul class="nav-links">
+      <li><a href="{% url 'menu:landing' %}">Меню</a></li>
+
+      <li class="dropdown" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="Меню акаунту">
+        {% if user.is_authenticated %}
+        <a href="#" aria-haspopup="true" aria-controls="account-dropdown">{{ user.username }} ▼</a>
+          {% else %}
+          <a href="#" aria-haspopup="true" aria-controls="account-dropdown">Акаунт ▼</a>
+          {% endif %}
+
+        <div class="dropdown-menu" id="account-dropdown" role="menu" aria-label="Підменю акаунту">
+            {% if user.is_authenticated %}
+          <a href="{% url 'accounts:logout' %}" role="menuitem">Вийти з акаунту</a>
+            {% else %}
+            <a href="{% url 'accounts:login' %}" role="menuitem">Логін</a>
+          <a href="{% url 'accounts:register' %}" role="menuitem">Реєстрація</a>
+
+            {% endif %}
+        </div>
+      </li>
+
+      <li class="dropdown" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="Меню кошика">
+        <a href="#" aria-haspopup="true" aria-controls="cart-dropdown">Кошик ▼</a>
+        <div class="dropdown-menu" id="cart-dropdown" role="menu" aria-label="Підменю кошика">
+          <a href="{% url 'cart:cart' %}" role="menuitem">Поточний кошик</a>
+          <a href="{% url 'cart:history' %}" role="menuitem">Історія замовлень</a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  {% block content %}
+  <!-- Тут основний контент конкретної сторінки -->
+  {% endblock %}
+</main>
+
+<footer>
+  &copy; 2025 FastBiteGo — Доставка їжі
+</footer>
+
+</body>
+</html>

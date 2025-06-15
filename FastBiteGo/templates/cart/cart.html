@@ -1,3 +1,10 @@
+{% extends "_base.html" %}
+{% block content %}
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Кошик</title>
 <style>
   /* Заголовок */
   h2.cart-title {
@@ -314,6 +321,4 @@ button.add-btn:hover {
 
   {{ form.amount.errors }}
 </form>
-
-
-
+  {% endblock %}
