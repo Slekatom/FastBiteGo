@@ -1,6 +1,57 @@
-<h2>Make an order</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Make an order</button>
-</form>
+{% extends "_base.html" %}
+{% block content %}
+
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Додати до кошика</title>
+
+<div style="
+  max-width: 500px;
+  margin: 40px auto;
+  background: linear-gradient(145deg, #ffffff, #f8f8f8);
+  padding: 32px 36px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #2c2c2c;
+">
+
+  <h2 style="
+    font-size: 1.8rem;
+    color: #ff6f00;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+  ">
+    🧾 Підтвердження замовлення
+  </h2>
+
+  <form method="post">
+    {% csrf_token %}
+    <div style="margin-bottom: 20px;">
+      {{ form.as_p }}
+    </div>
+
+    <button type="submit"  style="
+      width: 100%;
+      background: #ff6f00;
+      color: white;
+      border: none;
+      padding: 14px 0;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.25s ease-in-out;
+      box-shadow: 0 6px 14px rgba(255, 111, 0, 0.35);
+    "
+    onmouseover="this.style.background='#e65c00'; this.style.boxShadow='0 8px 18px rgba(230, 92, 0, 0.45)';"
+    onmouseout="this.style.background='#ff6f00'; this.style.boxShadow='0 6px 14px rgba(255, 111, 0, 0.35)';">
+      ✅ Підтвердити замовлення
+    </button>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,6 +1,15 @@
-<h2>Payment</h2>
+{% extends "_base.html" %}
+{% block content %}
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Спосіб оплати</title>
+  <h2>Payment</h2>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Payment</button>
 </form>
+
+  {% endblock %}

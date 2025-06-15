@@ -1,1 +1,419 @@
-{{ meal.title }}
+{% extends "_base.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ meal.title }} — Деталі страви</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    /* Общий стиль страницы */
+
+    main {
+      display: flex;
+      justify-content: center; /* центрирует по горизонтали */
+      /* если нужно, добавьте align-items для вертикального центрирования */
+      padding: 20px;
+    }
+    /* Контейнер */
+    .meal-card {
+      background: #ffffff;
+      max-width: 480px;
+      width: 100%;
+      border-radius: 15px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .meal-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+    }
+
+    /* Изображение */
+    .meal-image {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      border-bottom: 1px solid #e1e8f0;
+    }
+
+    /* Контент */
+    .meal-content {
+      padding: 1.8rem 2rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Заголовок */
+    .meal-title {
+      font-size: 2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #27ae60;
+      margin: 0;
+      letter-spacing: 1.2px;
+      user-select: none;
+    }
+
+    /* Описание */
+    .meal-description {
+      color: #555d66;
+      font-size: 1.1rem;
+      min-height: 72px;
+      line-height: 1.4;
+    }
+
+    /* Информация о блюде */
+    .meal-details {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      color: #34495e;
+      font-size: 0.95rem;
+    }
+    .meal-details div {
+      flex-basis: 30%;
+      background: #ecf0f1;
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
+    }
+    .meal-details span {
+      display: block;
+      margin-top: 0.3rem;
+      font-weight: 400;
+      color: #7f8c8d;
+      font-size: 0.85rem;
+    }
+
+    /* Статус наличия */
+    .stock-status {
+      margin-top: 1rem;
+      padding: 0.7rem;
+      border-radius: 20px;
+      font-weight: 700;
+      text-align: center;
+      user-select: none;
+      font-size: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .stock-status.in-stock {
+      background: #d4f8d4;
+      color: #2e7d32;
+      border: 2px solid #81c784;
+    }
+    .stock-status.out-of-stock {
+      background: #fbe9e9;
+      color: #c62828;
+      border: 2px solid #ef9a9a;
+    }
+
+    /* Кнопки */
+    .btn-group {
+      margin-top: auto;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .btn-action {
+      flex: 1;
+      padding: 12px 0;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      color: white;
+      box-shadow: 0 4px 14px rgba(255, 111, 0, 0.4);
+    }
+    .btn-add-to-cart {
+      background-color: #ff6f00;
+    }
+    .btn-add-to-cart:hover {
+      background-color: #e65c00;
+      box-shadow: 0 6px 20px rgba(230, 92, 0, 0.7);
+    }
+    .btn-review {
+      background-color: #6c757d;
+      box-shadow: 0 4px 14px rgba(108, 117, 125, 0.4);
+    }
+    .btn-review:hover {
+      background-color: #5a6268;
+      box-shadow: 0 6px 20px rgba(90, 98, 104, 0.7);
+    }
+
+    /* Отзывы */
+    .reviews-section {
+      margin-top: 2rem;
+      font-size: 1rem;
+      color: #34495e;
+    }
+    .review-item {
+      margin-bottom: 1rem;
+      padding-bottom: 0.7rem;
+      border-bottom: 1px solid #ddd;
+    }
+  .reviews-section {
+      margin-top: 2rem;
+      font-size: 1rem;
+      color: #34495e;
+    }
+    .review-item {
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.7rem;
+      border-bottom: 1px solid #ddd;
+    }
+    .review-user {
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .review-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.2rem;
+      color: #2c3e50;
+    }
+    .review-date {
+      font-size: 0.85rem;
+      color: #7f8c8d;
+    }
+    .review-text {
+      margin-top: 0.3rem;
+      font-size: 1rem;
+      color: #555d66;
+    }
+
+    /* Рейтинг звездочки */
+    .rating {
+      display: inline-flex;
+      gap: 2px;
+      direction: ltr;
+      user-select: none;
+    }
+    .star {
+      width: 20px;
+      height: 20px;
+      fill: #ccc;
+      transition: fill 0.3s ease;
+    }
+    .star.filled {
+      fill: #f1c40f;
+      filter: drop-shadow(0 0 1px rgba(0,0,0,0.2));
+    }
+  .review-user {
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .review-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #ccc; /* фон по умолчанию, если нет аватарки */
+  }
+  .review-user-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .review-user-name {
+    font-weight: 700;
+    color: #2c3e50;
+  }
+  .review-date {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+  }
+</style>
+</head>
+<body>
+
+  <article class="meal-card" role="main" aria-label="Деталі страви">
+    <img src="{{ meal.media.url }}" alt="{{ meal.title }}" class="meal-image" />
+    <div class="meal-content">
+      <h1 class="meal-title">{{ meal.title }}</h1>
+      <p class="meal-description">{{ meal.description }}</p>
+
+      <section class="meal-details" aria-label="Інформація про страву">
+        <div>
+          Категорія
+          <span>{{ meal.category }}</span>
+        </div>
+        <div>
+          Ціна
+          <span>{{ meal.price }} грн</span>
+        </div>
+        <div>
+          Тип
+          <span>{{ meal.type }}</span>
+        </div>
+      </section>
+
+      {% if meal.stock >= 1 %}
+        <div class="stock-status in-stock" aria-live="polite">В наявності</div>
+      {% else %}
+        <div class="stock-status out-of-stock" aria-live="polite">Немає в наявності</div>
+      {% endif %}
+
+      <div class="btn-group">
+        {% if meal.stock >= 1 %}
+          <button
+            class="btn-action btn-add-to-cart"
+            type="button"
+            onclick="window.location.href='{% url 'cart:order_by_id' meal.id %}'"
+          >
+            Додати у кошик
+          </button>
+        {% endif %}
+        <button
+          class="btn-action btn-review"
+          type="button"
+          onclick="window.location.href='{% url 'menu:review' meal.id %}'"
+        >
+          Написати відгук
+        </button>
+      </div>
+      <h2 align="center">-----------Відгуки-----------</h2>
+      <section class="reviews-section" aria-label="Відгуки">
+      {% if reviews %}
+        {% for review in reviews %}
+          <div class="review-item">
+            <div class="review-user">
+              {% if user.image %}
+                  <img src="{{ user.image.url }}" alt="{{ user.username }}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 50%; border: 2px solid #ff6f00;">
+                {% else %}
+                  <div style="width: 130px; height: 130px; line-height: 130px; background: #ff6f00; color: white; border-radius: 50%; font-size: 3rem; font-weight: bold; margin: 0 auto;">
+                    {{ user.username|slice:":1"|upper }}
+                  </div>
+                {% endif %}
+              <div class="review-user-info">
+                <span class="review-user-name">{{ review.user.first_name }} {{ review.user.second_name }}</span>
+                <span class="review-date">{{ review.created_at|date:"d.m.Y" }}</span>
+              </div>
+            </div>
+            <div class="review-title">{{ review.title }}</div>
+            <div class="rating" aria-label="Рейтинг: {{ review.rating }} з 5">
+              {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %}
+                  <!-- заполненная звезда -->
+                  <svg class="star filled" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                  </svg>
+                {% else %}
+                  <!-- пустая звезда -->
+                  <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="none" stroke="#ccc" stroke-width="2"/>
+                  </svg>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <p class="review-text">{{ review.text }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>Відгуків ще немає.</p>
+      {% endif %}
+    </section>
+    </div>
+  </article>
+
+</body>
+</html>
+<script>
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height;
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.radius = 2 + Math.random() * 2;
+      }
+
+      move() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(255,111,0,0.6)'; // оранжевый цвет с прозрачностью
+        ctx.fill();
+      }
+    }
+
+    const particlesCount = 60;
+    const particles = [];
+
+    for (let i = 0; i < particlesCount; i++) {
+      particles.push(new Particle());
+    }
+
+    function connectParticles() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 150) {
+            ctx.strokeStyle = `rgba(255,111,0,${1 - dist / 150})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach(p => {
+        p.move();
+        p.draw();
+      });
+
+      connectParticles();
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+{% endblock %}

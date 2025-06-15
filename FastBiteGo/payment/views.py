@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from .models import *
 from .forms import *
-from cart.models import Cart
+from cart.models import Cart, CartItems
 
 class PaymentCreate(CreateView):
     model = Payment
@@ -17,6 +17,11 @@ class PaymentCreate(CreateView):
         form.save()
         cart.status = "History"
         cart.save()
+        cartitems = CartItems.objects.filter(cart = cart)
+        for item in cartitems:
+            item.meal.stock = item.meal.progress_stock
+            item.meal.save()
+
         payment = form.instance
         if payment.choices == "Card":
             payment.purchase = "Purchased"

@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.views.generic import TemplateView, RedirectView
@@ -56,10 +57,24 @@ class MealDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         meal = self.get_object()
+        reviews = Review.objects.filter(meal = meal)
         context = super().get_context_data(**kwargs)
         context["meal"] = meal
+        context["reviews"] = reviews
         return context
 
-# class RatingCreateView(CreateView):
-#     model = Review
-#     template_name = ""
+class ReviewCreateView(CreateView):
+    model = Review
+    template_name = "menu/meal_review.html"
+    form_class = ReviewForm
+
+    def form_valid(self, form):
+        meal_pk = self.kwargs.get('meal_pk')
+        form.instance.user = self.request.user
+        form.instance.meal = get_object_or_404(Meal, id = meal_pk)
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("menu:landing")
+

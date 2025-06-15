@@ -1,7 +1,16 @@
-{{ data.title }}
+{% extends "_base.html" %}
+{% block content %}
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Меню страв</title>
+
+    {{ data.title }}
 
 {% for meal in data.meal_set.all %}
 <p>{{ meal.title }}</p>
 <img src="{{ meal.media.url }}" alt="{{ meal.title }}">
 
 {% endfor %}
+{% endblock %}
