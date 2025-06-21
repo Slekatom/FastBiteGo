@@ -36,3 +36,14 @@ class RequestDetailView(DetailView):
         context["request_ob"] = self.get_object()
         return context
 
+class ChatDetail(DetailView):
+    model = Chat
+    template_name = "courier/chat.html"
+    context_object_name = "chat"
+    pk_url_kwarg = "chat_pk"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["chat"] = self.get_object()
+        return context
+
