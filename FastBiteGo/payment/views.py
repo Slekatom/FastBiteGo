@@ -4,6 +4,7 @@ from django.views.generic import CreateView
 from .models import *
 from .forms import *
 from cart.models import Cart, CartItems
+from courier.models import Request
 
 class PaymentCreate(CreateView):
     model = Payment
@@ -26,6 +27,8 @@ class PaymentCreate(CreateView):
         if payment.choices == "Card":
             payment.purchase = "Purchased"
             payment.save()
+
+        request, _ = Request.objects.get_or_create(user = self.request.user, cart = cart)
 
         return super().form_valid(form)
 
