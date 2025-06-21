@@ -20,6 +20,10 @@ class RequestUpdate(UpdateView):
         form.instance.status = "Is Taken"
         form.instance.courier = self.request.user
         form.save()
+        request = self.get_object()
+        Chat.objects.create(user = request.user,
+                            courier = self.request.user,
+                            request = request)
         return super().form_valid(form)
 
 class RequestDetailView(DetailView):
@@ -31,3 +35,4 @@ class RequestDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["request_ob"] = self.get_object()
         return context
+
