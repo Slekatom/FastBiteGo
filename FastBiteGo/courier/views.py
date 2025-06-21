@@ -14,10 +14,11 @@ class RequestUpdate(UpdateView):
     success_url = reverse_lazy("courier:requests")
     fields = []
     context_object_name = "request"
+    pk_url_kwarg = "request_pk"
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
         form.instance.status = "Is Taken"
+        form.instance.courier = self.request.user
         form.save()
         return super().form_valid(form)
 
