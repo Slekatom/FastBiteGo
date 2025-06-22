@@ -9,6 +9,11 @@ class RequestList(ListView):
     template_name = "courier/requests.html"
     context_object_name = "requests"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["requests2"] = Request.objects.filter(status="Queue")
+        return context
+
 class MyRequestList(ListView):
     model = Request
     template_name = "courier/myrequests.html"
@@ -17,6 +22,8 @@ class MyRequestList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["my_requests"] = Request.objects.filter(courier = self.request.user, status = "Is Taken")
+        context["user_request"] = Request.objects.filter(user = self.request.user, status = "Is Taken")
+        context["usernow"] = self.request.user
         return context
 
 
