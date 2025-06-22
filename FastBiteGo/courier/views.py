@@ -3,21 +3,25 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, UpdateView, DetailView, CreateView
 from .forms import *
 from .models import *
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class RequestList(ListView):
+
+class RequestList(LoginRequiredMixin, ListView):
     model = Request
     template_name = "courier/requests.html"
     context_object_name = "requests"
-
+    redirect_field_name = 'next'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["requests2"] = Request.objects.filter(status="Queue")
         return context
 
-class MyRequestList(ListView):
+class MyRequestList(LoginRequiredMixin, ListView):
     model = Request
     template_name = "courier/myrequests.html"
     context_object_name = "requests"
+    redirect_field_name = 'next'
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -27,13 +31,14 @@ class MyRequestList(ListView):
         return context
 
 
-class RequestUpdate(UpdateView):
+class RequestUpdate(LoginRequiredMixin, UpdateView):
     model = Request
     template_name = "courier/take_request.html"
     success_url = reverse_lazy("courier:requests")
     fields = []
     context_object_name = "request"
     pk_url_kwarg = "request_pk"
+    redirect_field_name = 'next'
 
     def form_valid(self, form):
         form.instance.status = "Is Taken"
@@ -45,12 +50,12 @@ class RequestUpdate(UpdateView):
                             request = request)
         return super().form_valid(form)
 
-class RequestDetailView(DetailView):
+class RequestDetailView(LoginRequiredMixin, DetailView):
     model = Request
     template_name = "courier/detail.html"
     context_object_name = "request_obj"
     pk_url_kwarg = "request_pk"
-
+    redirect_field_name = 'next'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -68,10 +73,11 @@ class RequestDetailView(DetailView):
 #         context["chat"] = self.get_object()
 #         return context
 
-class MessageCreate(CreateView):
+class MessageCreate(LoginRequiredMixin, CreateView):
     model = Message
     template_name = "courier/chat.html"
     form_class = MessageForm
+    redirect_field_name = 'next'
 
     def form_valid(self, form):
         chat_id = self.kwargs.get("chat_pk")
