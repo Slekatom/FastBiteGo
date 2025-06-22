@@ -57,8 +57,7 @@ class MessageCreate(CreateView):
         chat_id = self.kwargs.get("chat_pk")
         chat = Chat.objects.get(id=chat_id)
         form.instance.chat = chat
-        form.instance.user = chat.user
-        form.instance.courier = chat.courier
+        form.instance.user = self.request.user
         form.save()
         return super().form_valid(form)
 
@@ -74,4 +73,5 @@ class MessageCreate(CreateView):
         chat = Chat.objects.get(id=chat_id)
         context = super().get_context_data(**kwargs)
         context["messages"] = Message.objects.filter(chat = chat)
+        context["user_now"] = self.request.user
         return context

@@ -1,4 +1,3 @@
-<!-- templates/courier/chat.html -->
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
@@ -6,5 +5,11 @@
 </form>
 
 {% for message in messages %}
-{{ message.text }}
+    {% if user_now.username == message.user.username %}
+        <p><strong>Ви:</strong> {{ message.text }}</p>
+    {% elif message.user == message.chat.courier %}
+        <p><strong>Кур'єр {{ message.chat.courier.username }} :</strong> {{ message.text }}</p>
+    {% else %}
+        <p><strong>{{ message.user.username }} :</strong> {{ message.text }}</p>
+    {% endif %}
 {% endfor %}
