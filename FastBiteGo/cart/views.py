@@ -179,7 +179,7 @@ class HistoryView(ListView):
 
 def reorder(request, cart_id):
     cart = get_object_or_404(Cart, id = cart_id, status = "History")
-    new_cart = get_object_or_404(Cart, status = "In progress")
+    new_cart = get_object_or_404(Cart, status = "In progress", user = request.user)
 
     new_cart.items.all().delete()
 

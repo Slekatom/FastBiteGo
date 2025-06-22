@@ -9,6 +9,17 @@ class RequestList(ListView):
     template_name = "courier/requests.html"
     context_object_name = "requests"
 
+class MyRequestList(ListView):
+    model = Request
+    template_name = "courier/myrequests.html"
+    context_object_name = "requests"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["my_requests"] = Request.objects.filter(courier = self.request.user, status = "Is Taken")
+        return context
+
+
 class RequestUpdate(UpdateView):
     model = Request
     template_name = "courier/take_request.html"
@@ -31,6 +42,8 @@ class RequestDetailView(DetailView):
     model = Request
     template_name = "courier/detail.html"
     context_object_name = "request_obj"
+    pk_url_kwarg = "request_pk"
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

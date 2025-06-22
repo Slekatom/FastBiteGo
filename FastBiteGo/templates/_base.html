@@ -183,6 +183,7 @@
         <div class="dropdown-menu" id="account-dropdown" role="menu" aria-label="Підменю акаунту">
             {% if user.is_authenticated %}
           <a href="{% url 'accounts:logout' %}" role="menuitem">Вийти з акаунту</a>
+          <a href="{% url 'accounts:my_profile' %}" role="menuitem">Мій профіль</a>
             {% else %}
             <a href="{% url 'accounts:login' %}" role="menuitem">Логін</a>
           <a href="{% url 'accounts:register' %}" role="menuitem">Реєстрація</a>
@@ -198,6 +199,22 @@
           <a href="{% url 'cart:history' %}" role="menuitem">Історія замовлень</a>
         </div>
       </li>
+      {% if user.courier == True %}
+      <li class="dropdown" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="Меню кур'єра">
+        <a href="#" aria-haspopup="true" aria-controls="cart-dropdown">Меню Кур'єра▼</a>
+        <div class="dropdown-menu" id="cart-dropdown" role="menu" aria-label="Підменю кошика">
+          <a href="{% url 'courier:requests' %}" role="menuitem">Усі запити</a>
+          <a href="{% url 'courier:my_requests' %}" role="menuitem">Мої запити</a>
+        </div>
+      </li>
+      {% else %}
+       <li class="dropdown" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="Доставка">
+        <a href="#" aria-haspopup="true" aria-controls="cart-dropdown">Доставка▼</a>
+        <div class="dropdown-menu" id="cart-dropdown" role="menu" aria-label="Підменю кошика">
+          <a href="{% url 'courier:requests' %}" role="menuitem">Мої запити на доставку</a>
+        </div>
+      </li>
+      {% endif %}
     </ul>
   </nav>
 </header>
