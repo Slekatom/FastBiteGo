@@ -1,3 +1,39 @@
-{% for request in requests %}
-<h1>{{ request }}</h1>
-{% endfor %}
+{% extends "_base.html" %}
+
+{% block content %}
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Взяти замовлення</title>
+</head>
+<body>
+{% if requests2 %}
+  {% for request in requests2 %}
+    <div class="card mb-4 p-4 shadow-sm rounded border" style="max-width: 600px; margin: 2rem auto; background-color: #f9f9f9;">
+      <h3 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333;">
+        {{ request }}
+      </h3>
+      <a href="{% url 'courier:update' request_pk=request.id %}" class="btn btn-success mt-3" style="
+        display: inline-block;
+        background-color: #28a745;
+        color: white;
+        padding: 10px 24px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      "
+      onmouseover="this.style.backgroundColor='#218838'; this.style.transform='scale(1.05)'"
+      onmouseout="this.style.backgroundColor='#28a745'; this.style.transform='scale(1)'">
+        Взяти заявку
+      </a>
+    </div>
+  {% endfor %}
+{% else %}
+
+<h1>Активних зайвок немає</h1>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,162 @@
+{% extends "_base.html" %}
+{% block content %}
+<div style="
+  max-width: 480px;
+  margin: 3rem auto;
+  background: #fff;
+  padding: 30px 35px;
+  border-radius: 22px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+  display: flex;
+  flex-direction: column;
+  height: 75vh;
+">
+
+  <div style="
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-right: 8px;
+  ">
+    {% for message in messages %}
+      {% if user_now.username == message.user.username %}
+        <!-- Your message (right) -->
+        <div style="
+          align-self: flex-end;
+          background: linear-gradient(135deg, #ff8c00, #ff6f00);
+          color: #fff;
+          padding: 14px 20px;
+          border-radius: 25px 25px 0 25px;
+          max-width: 75%;
+          box-shadow: 0 6px 15px rgba(255,111,0,0.35);
+          position: relative;
+          font-size: 1rem;
+          word-break: break-word;
+        ">
+          {{ message.text }}
+          <div style="
+            font-size: 0.7rem;
+            opacity: 0.75;
+            margin-top: 6px;
+            text-align: right;
+            font-style: italic;
+          ">
+            {{ message.created|date:"H:i, d M" }}
+          </div>
+        </div>
+
+      {% elif message.user == message.chat.courier %}
+        <!-- Courier message (left) -->
+        <div style="
+          align-self: flex-start;
+          background: #f0f0f0;
+          padding: 14px 20px;
+          border-radius: 25px 25px 25px 0;
+          max-width: 75%;
+          box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+          position: relative;
+          font-size: 0.95rem;
+          word-break: break-word;
+          color: #555;
+        ">
+          <div style="font-weight: 700; color: #ff6f00; margin-bottom: 8px;">
+            Кур'єр {{ message.chat.courier.username }}
+          </div>
+          {{ message.text }}
+          <div style="
+            font-size: 0.65rem;
+            opacity: 0.5;
+            margin-top: 6px;
+            text-align: right;
+            font-style: italic;
+          ">
+            {{ message.created|date:"H:i, d M" }}
+          </div>
+        </div>
+
+      {% else %}
+        <!-- Other user message (left) -->
+        <div style="
+          align-self: flex-start;
+          background: #e6e6e6;
+          padding: 14px 20px;
+          border-radius: 25px 25px 25px 0;
+          max-width: 75%;
+          box-shadow: 0 6px 15px rgba(0,0,0,0.03);
+          position: relative;
+          font-size: 0.95rem;
+          word-break: break-word;
+          color: #444;
+        ">
+          <div style="font-weight: 700; margin-bottom: 8px; color: #777;">
+            {{ message.user.username }}
+          </div>
+          {{ message.text }}
+          <div style="
+            font-size: 0.65rem;
+            opacity: 0.5;
+            margin-top: 6px;
+            text-align: right;
+            font-style: italic;
+          ">
+            {{ message.created|date:"H:i, d M" }}
+          </div>
+        </div>
+      {% endif %}
+    {% empty %}
+      <p style="text-align:center; color:#aaa; margin-top: 20px; font-style: italic;">Немає повідомлень</p>
+    {% endfor %}
+  </div>
+
+  <form method="post" style="
+    display: flex;
+    gap: 15px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+  ">
+    {% csrf_token %}
+    <input
+      type="text"
+      name="text"
+      placeholder="Напишіть повідомлення..."
+      required
+      style="
+        flex-grow: 1;
+        padding: 14px 22px;
+        border-radius: 30px;
+        border: 2px solid #ff6f00;
+        font-size: 1rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+      "
+      onfocus="this.style.boxShadow='0 0 8px #ff6f00'; this.style.borderColor='#ff6f00';"
+      onblur="this.style.boxShadow='none'; this.style.borderColor='#ff6f00';"
+      autocomplete="off"
+      autofocus
+    />
+    <button type="submit" style="
+      background-color: #ff6f00;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      border-radius: 35px;
+      cursor: pointer;
+      box-shadow: 0 9px 25px rgba(255, 111, 0, 0.55);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      user-select: none;
+    "
+    onmouseover="this.style.backgroundColor='#e65c00'; this.style.transform='scale(1.07)';"
+    onmouseout="this.style.backgroundColor='#ff6f00'; this.style.transform='scale(1)';"
+    >
+      Відправити
+    </button>
+  </form>
+</div>
+{% endblock %}

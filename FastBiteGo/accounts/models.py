@@ -10,6 +10,7 @@ class CustomUser(AbstractUser):
     password = models.CharField(max_length=120)
     phone = models.PositiveIntegerField(null = True, blank=True)
     image = models.ImageField(blank=True, null=True)
+    courier = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username

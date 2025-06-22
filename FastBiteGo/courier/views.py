@@ -1,12 +1,31 @@
 from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.views.generic import ListView, UpdateView, DetailView
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, UpdateView, DetailView, CreateView
+from .forms import *
 from .models import *
 
 class RequestList(ListView):
     model = Request
     template_name = "courier/requests.html"
     context_object_name = "requests"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["requests2"] = Request.objects.filter(status="Queue")
+        return context
+
+class MyRequestList(ListView):
+    model = Request
+    template_name = "courier/myrequests.html"
+    context_object_name = "requests"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["my_requests"] = Request.objects.filter(courier = self.request.user, status = "Is Taken")
+        context["user_request"] = Request.objects.filter(user = self.request.user, status = "Is Taken")
+        context["usernow"] = self.request.user
+        return context
+
 
 class RequestUpdate(UpdateView):
     model = Request
@@ -20,14 +39,59 @@ class RequestUpdate(UpdateView):
         form.instance.status = "Is Taken"
         form.instance.courier = self.request.user
         form.save()
+        request = self.get_object()
+        Chat.objects.create(user = request.user,
+                            courier = self.request.user,
+                            request = request)
         return super().form_valid(form)
 
 class RequestDetailView(DetailView):
     model = Request
     template_name = "courier/detail.html"
     context_object_name = "request_obj"
+    pk_url_kwarg = "request_pk"
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["request_ob"] = self.get_object()
+        return context
+
+# class ChatDetail(DetailView):
+#     model = Chat
+#     template_name = "courier/chat.html"
+#     context_object_name = "chat"
+#     pk_url_kwarg = "chat_pk"
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["chat"] = self.get_object()
+#         return context
+
+class MessageCreate(CreateView):
+    model = Message
+    template_name = "courier/chat.html"
+    form_class = MessageForm
+
+    def form_valid(self, form):
+        chat_id = self.kwargs.get("chat_pk")
+        chat = Chat.objects.get(id=chat_id)
+        form.instance.chat = chat
+        form.instance.user = self.request.user
+        form.save()
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Форма невалидна:", form.errors)
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("courier:chat", kwargs = {"chat_pk": self.kwargs["chat_pk"]})
+
+    def get_context_data(self, **kwargs):
+        chat_id = self.kwargs.get("chat_pk")
+        chat = Chat.objects.get(id=chat_id)
+        context = super().get_context_data(**kwargs)
+        context["messages"] = Message.objects.filter(chat = chat)
+        context["user_now"] = self.request.user
         return context

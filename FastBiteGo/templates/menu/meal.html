@@ -296,13 +296,13 @@
         {% for review in reviews %}
           <div class="review-item">
             <div class="review-user">
-              {% if user.image %}
-                  <img src="{{ user.image.url }}" alt="{{ user.username }}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 50%; border: 2px solid #ff6f00;">
-                {% else %}
-                  <div style="width: 130px; height: 130px; line-height: 130px; background: #ff6f00; color: white; border-radius: 50%; font-size: 3rem; font-weight: bold; margin: 0 auto;">
-                    {{ user.username|slice:":1"|upper }}
-                  </div>
-                {% endif %}
+              {% if review.user.image %}
+              <img src="{{ review.user.image.url }}" alt="{{ review.user.username }}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 50%; border: 2px solid #ff6f00;">
+            {% else %}
+              <div style="width: 130px; height: 130px; line-height: 130px; background: #ff6f00; color: white; border-radius: 50%; font-size: 3rem; font-weight: bold; margin: 0 auto;">
+                {{ review.user.username|slice:":1"|upper }}
+              </div>
+            {% endif %}
               <div class="review-user-info">
                 <span class="review-user-name">{{ review.user.first_name }} {{ review.user.second_name }}</span>
                 <span class="review-date">{{ review.created_at|date:"d.m.Y" }}</span>

@@ -61,6 +61,7 @@ class MealDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["meal"] = meal
         context["reviews"] = reviews
+        context["usernow"] = self.request.user
         return context
 
 class ReviewCreateView(CreateView):
