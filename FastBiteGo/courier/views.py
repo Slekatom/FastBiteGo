@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.views.generic import ListView, UpdateView, DetailView
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, UpdateView, DetailView, CreateView
+from .forms import *
 from .models import *
 
 class RequestList(ListView):
@@ -36,14 +37,41 @@ class RequestDetailView(DetailView):
         context["request_ob"] = self.get_object()
         return context
 
-class ChatDetail(DetailView):
-    model = Chat
+# class ChatDetail(DetailView):
+#     model = Chat
+#     template_name = "courier/chat.html"
+#     context_object_name = "chat"
+#     pk_url_kwarg = "chat_pk"
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["chat"] = self.get_object()
+#         return context
+
+class MessageCreate(CreateView):
+    model = Message
     template_name = "courier/chat.html"
-    context_object_name = "chat"
-    pk_url_kwarg = "chat_pk"
+    form_class = MessageForm
+
+    def form_valid(self, form):
+        chat_id = self.kwargs.get("chat_pk")
+        chat = Chat.objects.get(id=chat_id)
+        form.instance.chat = chat
+        form.instance.user = chat.user
+        form.instance.courier = chat.courier
+        form.save()
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Форма невалидна:", form.errors)
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("courier:requests")
 
     def get_context_data(self, **kwargs):
+        chat_id = self.kwargs.get("chat_pk")
+        chat = Chat.objects.get(id=chat_id)
         context = super().get_context_data(**kwargs)
-        context["chat"] = self.get_object()
+        context["messages"] = Message.objects.filter(chat = chat)
         return context
-

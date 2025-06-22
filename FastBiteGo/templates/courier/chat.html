@@ -1,1 +1,10 @@
-{{ chat }}
+<!-- templates/courier/chat.html -->
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Отправить</button>
+</form>
+
+{% for message in messages %}
+{{ message.text }}
+{% endfor %}
