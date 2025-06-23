@@ -19,6 +19,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from django.conf.urls import handler403
+
+handler403 = 'accounts.views.custom_permission_denied_view'
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,3 +40,4 @@ if settings.DEBUG:
 
 print("Loading FastBiteGo.urls")
 print("urlpatterns:", urlpatterns)
+
