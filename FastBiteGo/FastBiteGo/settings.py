@@ -29,7 +29,7 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-
+print("test")
 
 ALLOWED_HOSTS = ['yourusername.pythonanywhere.com', 'bunkeronline.pythonanywhere.com', '127.0.0.1', 'localhost']
 
