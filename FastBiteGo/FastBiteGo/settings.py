@@ -31,7 +31,7 @@ DEBUG = False
 
 print("test")
 
-ALLOWED_HOSTS = ['yourusername.pythonanywhere.com', 'bunkeronline.pythonanywhere.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['fastbitego.pythonanywhere.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
