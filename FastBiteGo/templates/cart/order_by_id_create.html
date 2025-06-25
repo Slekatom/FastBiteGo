@@ -1,12 +1,6 @@
 {% extends "_base.html" %}
+
 {% block content %}
-
-<html lang="uk">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Додати до кошика</title>
-
 <div style="
   max-width: 500px;
   margin: 40px auto;
@@ -28,30 +22,35 @@
     🧾 Підтвердження замовлення
   </h2>
 
-  <form method="post">
-    {% csrf_token %}
-    <div style="margin-bottom: 20px;">
-      {{ form.as_p }}
+  {% if not_available %}
+    <div style="background: #ffe6e6; color: #d32f2f; padding: 16px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
+      ❌ Цей товар наразі <strong>немає в наявності</strong>. Будь ласка, спробуйте пізніше або оберіть інший.
     </div>
+  {% else %}
+    <form method="post">
+      {% csrf_token %}
+      <div style="margin-bottom: 20px;">
+        {{ form.as_p }}
+      </div>
 
-    <button type="submit"  style="
-      width: 100%;
-      background: #ff6f00;
-      color: white;
-      border: none;
-      padding: 14px 0;
-      font-size: 1.05rem;
-      font-weight: 600;
-      border-radius: 40px;
-      cursor: pointer;
-      transition: all 0.25s ease-in-out;
-      box-shadow: 0 6px 14px rgba(255, 111, 0, 0.35);
-    "
-    onmouseover="this.style.background='#e65c00'; this.style.boxShadow='0 8px 18px rgba(230, 92, 0, 0.45)';"
-    onmouseout="this.style.background='#ff6f00'; this.style.boxShadow='0 6px 14px rgba(255, 111, 0, 0.35)';">
-      ✅ Підтвердити замовлення
-    </button>
-  </form>
+      <button type="submit" style="
+        width: 100%;
+        background: #ff6f00;
+        color: white;
+        border: none;
+        padding: 14px 0;
+        font-size: 1.05rem;
+        font-weight: 600;
+        border-radius: 40px;
+        cursor: pointer;
+        transition: all 0.25s ease-in-out;
+        box-shadow: 0 6px 14px rgba(255, 111, 0, 0.35);
+      "
+      onmouseover="this.style.background='#e65c00'; this.style.boxShadow='0 8px 18px rgba(230, 92, 0, 0.45)';"
+      onmouseout="this.style.background='#ff6f00'; this.style.boxShadow='0 6px 14px rgba(255, 111, 0, 0.35)';">
+        ✅ Підтвердити замовлення
+      </button>
+    </form>
+  {% endif %}
 </div>
-
 {% endblock %}
