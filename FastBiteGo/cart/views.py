@@ -7,13 +7,13 @@ from django.shortcuts import get_object_or_404, redirect
 from menu.models import Meal
 from django.forms import modelformset_factory
 from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-
-class OrderCreateView(CreateView):
+class OrderCreateView(LoginRequiredMixin, CreateView):
     model = Order
     template_name = "cart/order_create.html"
     form_class = OrderCreate
-
+    redirect_field_name = 'next'
     def form_valid(self, form):
         form.instance.user = self.request.user
         order = form.save()
@@ -41,11 +41,11 @@ class OrderCreateView(CreateView):
     def get_success_url(self):
         return reverse_lazy("cart:cart")
 
-class OrderByIdCreateView(CreateView):
+class OrderByIdCreateView(LoginRequiredMixin, CreateView):
     model = Order
     template_name = "cart/order_by_id_create.html"
     form_class = OrderByIdCreate
-
+    redirect_field_name = 'next'
     def dispatch(self, request, *args, **kwargs):
         self.meal = get_object_or_404(Meal, pk=kwargs["pk"])
         return super().dispatch(request, *args, **kwargs)
@@ -90,10 +90,11 @@ CartItemFormSet = modelformset_factory(
     extra=0
 )
 
-class CartView(ListView):
+class CartView(LoginRequiredMixin, ListView):
     model = CartItems
     template_name = "cart/cart.html"
     context_object_name = "items"
+    redirect_field_name = 'next'
 
     def get_queryset(self):
         cart, _ = Cart.objects.get_or_create(user=self.request.user, status="In progress")
@@ -160,11 +161,11 @@ class CartView(ListView):
 
         return redirect('cart:cart')
 
-class HistoryView(ListView):
+class HistoryView(LoginRequiredMixin, ListView):
     model = CartItems
     template_name = "cart/history.html"
     context_object_name = "items"
-
+    redirect_field_name = 'next'
     def get_queryset(self):
         cart, _ = Cart.objects.get_or_create(user=self.request.user, status="In progress")
         return cart.items.select_related('meal').all()

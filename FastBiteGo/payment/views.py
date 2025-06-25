@@ -5,11 +5,14 @@ from .models import *
 from .forms import *
 from cart.models import Cart, CartItems
 from courier.models import Request
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class PaymentCreate(CreateView):
+
+class PaymentCreate(LoginRequiredMixin, CreateView):
     model = Payment
     template_name = "payment/payment_create.html"
     form_class = PaymentCreate
+    redirect_field_name = 'next'
 
     def form_valid(self, form):
         form.instance.user = self.request.user

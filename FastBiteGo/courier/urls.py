@@ -10,4 +10,5 @@ urlpatterns = [
     path("requests/<int:request_pk>/", RequestDetailView.as_view(), name="detail"),
     #path("chat/<int:chat_pk>/", ChatDetail.as_view(), name = "chat"),
     path("chat/<int:chat_pk>/", MessageCreate.as_view(), name = "chat"),
+
 ]
