@@ -3,8 +3,14 @@ from django.contrib.auth import login, logout, authenticate
 from .forms import *
 from django.views.generic import CreateView, FormView, DetailView, TemplateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
+from django_ratelimit.decorators import ratelimit
+from django.utils.decorators import method_decorator
+from django.shortcuts import render
 
-print("test")
+def custom_permission_denied_view(request, exception=None):
+    return render(request, '403.html', status=403)
+
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class LoginView(FormView):
     template_name = "accounts/login.html"
     form_class = AuthenticationForm
@@ -78,3 +84,4 @@ class MyProfileDelete(DeleteView):
 
     def get_object(self, queryset=None):
         return self.request.user
+

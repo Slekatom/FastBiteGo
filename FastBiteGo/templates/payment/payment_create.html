@@ -1,15 +1,64 @@
 {% extends "_base.html" %}
 {% block content %}
-<html lang="uk">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Спосіб оплати</title>
-  <h2>Payment</h2>
-<form method="post">
+
+<div style="
+  max-width: 600px;
+  margin: 60px auto;
+  background: linear-gradient(135deg, #ffffff, #f9f9f9);
+  padding: 40px 50px;
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+">
+
+  <h2 style="
+    font-size: 2rem;
+    color: #ff6f00;
+    text-align: center;
+    margin-bottom: 2rem;
+  ">
+    💳 Оберіть спосіб оплати
+  </h2>
+
+  <form method="post">
   {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Payment</button>
+
+  {# Виводимо лише інші поля форми, але НЕ choices #}
+  {% for field in form %}
+    {% if field.name != 'choices' %}
+      <div style="margin-bottom: 1rem;">
+        {{ field.label_tag }}<br>
+        {{ field }}
+        {% if field.errors %}
+          <div style="color: red;">{{ field.errors }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endfor %}
+
+  <div style="display: flex; gap: 20px; justify-content: center; margin-top: 1rem;">
+
+    <button type="submit" name="choices" value="Card" style="all: unset; cursor: pointer; flex: 1;">
+      <div style="border: 2px solid #ddd; padding: 20px; border-radius: 12px; text-align: center; background: #fff; transition: 0.3s;"
+           onmouseover="this.style.borderColor='#ff6f00';" onmouseout="this.style.borderColor='#ddd';">
+        <img src="https://img.icons8.com/color/96/000000/bank-card-front-side.png" alt="Картка" style="height: 60px; margin-bottom: 10px;">
+        <p style="font-weight: 600; font-size: 1.1rem;">Картка</p>
+      </div>
+    </button>
+
+    <button type="submit" name="choices" value="Cash" style="all: unset; cursor: pointer; flex: 1;">
+      <div style="border: 2px solid #ddd; padding: 20px; border-radius: 12px; text-align: center; background: #fff; transition: 0.3s;"
+           onmouseover="this.style.borderColor='#ff6f00';" onmouseout="this.style.borderColor='#ddd';">
+        <img src="https://img.icons8.com/color/96/000000/cash-in-hand.png" alt="Готівка" style="height: 60px; margin-bottom: 10px;">
+        <p style="font-weight: 600; font-size: 1.1rem;">Готівка</p>
+      </div>
+    </button>
+
+  </div>
 </form>
 
-  {% endblock %}
+
+</div>
+
+{% endblock %}

@@ -6,12 +6,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
+    /* Переменные для тем */
+    :root {
+      --header-bg: linear-gradient(90deg, #ff6f00, #ffb84d);
+      --header-shadow: rgba(255, 111, 0, 0.3);
+      --link-color: white;
+      --background-color: #f0f4f8;
+      --text-color: #2c3e50;
+      --dropdown-bg: white;
+      --dropdown-text: #2c3e50;
+      --dropdown-hover-bg: #ff6f00;
+      --dropdown-hover-color: white;
+      --footer-bg: #ff6f00;
+    --footer-color: white;
+    }
+    body.dark-theme {
+  --header-bg: #222;
+  --header-shadow: rgba(0, 0, 0, 0.7);
+  --link-color: #eee;
+  --background-color: #273c3f;
+  --text-color: #eee;
+  --dropdown-bg: #333;
+  --dropdown-text: #eee;
+  --dropdown-hover-bg: #ffb84d;
+  --dropdown-hover-color: #222;
+  --footer-bg: #222; /* здесь два дефиса */
+  --footer-color: #eee; /* сделай цвет текста светлым */
+}
     /* Базовые стили для body и шрифтов */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
-      background: #f0f4f8;
-      color: #2c3e50;
+      background: var(--background-color);
+      color: var(--text-color);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -19,10 +46,10 @@
 
     /* Хедер */
     header {
-      background: linear-gradient(90deg, #ff6f00, #ffb84d);
+      background: var(--header-bg);
       padding: 1rem 2rem;
-      box-shadow: 0 4px 10px rgba(255, 111, 0, 0.3);
-      color: white;
+      box-shadow: 0 4px 10px var(--header-shadow);
+      color: var(--link-color);
     }
 
     /* Навигация */
@@ -33,6 +60,7 @@
       max-width: 1200px;
       margin: 0 auto;
       flex-wrap: wrap;
+      gap: 1rem;
     }
 
     /* Логотип / название сайта */
@@ -42,6 +70,7 @@
       user-select: none;
       cursor: default;
       letter-spacing: 1.5px;
+      flex-shrink: 0;
     }
 
     /* Основное меню */
@@ -52,6 +81,7 @@
       list-style: none;
       padding-left: 0;
       margin: 0;
+      flex-grow: 1;
     }
 
     .nav-links li {
@@ -59,12 +89,13 @@
     }
 
     .nav-links a {
-      color: white;
+      color: var(--link-color);
       text-decoration: none;
       font-weight: 600;
       padding: 0.4rem 0.6rem;
       border-radius: 6px;
       transition: background-color 0.3s ease;
+      white-space: nowrap;
     }
 
     .nav-links a:hover,
@@ -82,8 +113,8 @@
       position: absolute;
       top: 120%;
       right: 0;
-      background: white;
-      color: #2c3e50;
+      background: var(--dropdown-bg);
+      color: var(--dropdown-text);
       min-width: 160px;
       border-radius: 8px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
@@ -95,7 +126,7 @@
 
     .dropdown-menu a {
       padding: 0.5rem 1rem;
-      color: #2c3e50;
+      color: var(--dropdown-text);
       font-weight: 600;
       text-decoration: none;
       white-space: nowrap;
@@ -103,14 +134,34 @@
 
     .dropdown-menu a:hover,
     .dropdown-menu a:focus {
-      background-color: #ff6f00;
-      color: white;
+      background-color: var(--dropdown-hover-bg);
+      color: var(--dropdown-hover-color);
       outline: none;
     }
 
     .dropdown:hover .dropdown-menu,
     .dropdown:focus-within .dropdown-menu {
       display: flex;
+    }
+
+    /* Кнопка переключения темы */
+    .theme-toggle-btn {
+      background: transparent;
+      border: 2px solid var(--link-color);
+      color: var(--link-color);
+      font-weight: 600;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .theme-toggle-btn:hover,
+    .theme-toggle-btn:focus {
+      background-color: rgba(255, 255, 255, 0.25);
+      outline: none;
     }
 
     /* Контейнер для основного контента */
@@ -122,15 +173,15 @@
       width: 100%;
     }
 
-    /* Футер (если нужен) */
+    /* Футер */
     footer {
-      background-color: #ff6f00;
-      color: white;
-      text-align: center;
-      padding: 1rem 0;
-      user-select: none;
-      font-weight: 600;
-    }
+  background-color: var(--footer-bg);
+  color: var(--footer-color);
+  text-align: center;
+  padding: 1rem 0;
+  user-select: none;
+  font-weight: 600;
+}
 
     /* Адаптивность меню на маленьких экранах */
     @media (max-width: 600px) {
@@ -154,7 +205,7 @@
       .dropdown:hover .dropdown-menu,
       .dropdown:focus-within .dropdown-menu {
         display: flex;
-        background: white;
+        background: var(--dropdown-bg);
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         border-radius: 8px;
         position: static;
@@ -211,11 +262,13 @@
        <li class="dropdown" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="Доставка">
         <a href="#" aria-haspopup="true" aria-controls="cart-dropdown">Доставка▼</a>
         <div class="dropdown-menu" id="cart-dropdown" role="menu" aria-label="Підменю кошика">
-          <a href="{% url 'courier:my_requests' %}" role="menuitem">Мої запити на доставку</a>
+          <a href="{% url 'courier:my_requests' %}" role="menuitem">Чати з кур'єрами</a>
         </div>
       </li>
       {% endif %}
     </ul>
+
+    <button class="theme-toggle-btn" aria-label="Переключити тему" title="Переключити тему">🌓</button>
   </nav>
 </header>
 
@@ -228,6 +281,28 @@
 <footer>
   &copy; 2025 FastBiteGo — Доставка їжі
 </footer>
+
+<script>
+  const btn = document.querySelector('.theme-toggle-btn');
+  btn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+
+    // Сохраняем выбор в localStorage
+    if(document.body.classList.contains('dark-theme')){
+      localStorage.setItem('theme', 'dark');
+    } else {
+      localStorage.setItem('theme', 'light');
+    }
+  });
+
+  // При загрузке страницы восстанавливаем тему
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    if(savedTheme === 'dark'){
+      document.body.classList.add('dark-theme');
+    }
+  });
+</script>
 
 </body>
 </html>
