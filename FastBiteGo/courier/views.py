@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, UpdateView, DetailView, CreateView
+from django.http import HttpResponseBadRequest
+
 from .forms import *
 from .models import *
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -43,12 +45,20 @@ class RequestUpdate(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.status = "Is Taken"
         form.instance.courier = self.request.user
-        form.save()
-        request = self.get_object()
-        Chat.objects.create(user = request.user,
-                            courier = self.request.user,
-                            request = request)
-        return super().form_valid(form)
+        if form.instance.courier != form.instance.user:
+            form.save()
+            request = form.instance
+            chat = Chat.objects.create(user = request.user,
+                                courier = self.request.user,
+                                request = request)
+            url = reverse('courier:detail', args=[chat.request.id])
+            Message.objects.create(user = chat.courier,
+                                   text = f"Кур'єр {chat.courier} прийняв замовлення {chat.user}. Переглянути замовлення: {url}",
+                                   chat = chat)
+            return super().form_valid(form)
+        else:
+            return HttpResponseBadRequest("Не дури систему, хай інший тобі доставить їжу!")
+
 
 class RequestDetailView(LoginRequiredMixin, DetailView):
     model = Request
@@ -61,17 +71,6 @@ class RequestDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["request_ob"] = self.get_object()
         return context
-
-# class ChatDetail(DetailView):
-#     model = Chat
-#     template_name = "courier/chat.html"
-#     context_object_name = "chat"
-#     pk_url_kwarg = "chat_pk"
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context["chat"] = self.get_object()
-#         return context
 
 class MessageCreate(LoginRequiredMixin, CreateView):
     model = Message

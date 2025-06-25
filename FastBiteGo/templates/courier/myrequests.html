@@ -1,6 +1,7 @@
 {% extends "_base.html" %}
 
 {% block content %}
+
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
@@ -8,16 +9,15 @@
   <title>Мої запити</title>
 </head>
 <body>
-
+{% if not my_requests %}
+<h1>Чатів ще немає</h1>
+{% endif %}
 {% if my_requests and request.user.username == my_requests.0.courier.username %}
   {% for req in my_requests %}
     <div class="card mb-4 p-4 shadow-sm rounded border" style="max-width: 600px; margin: 2rem auto; background-color: #f1f1ff;">
       <h3 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #444;">
-        {{ req }}
+        Дата: {{ req.created }} | Замовник: {{ req.user }}
       </h3>
-      <p style="margin-top: 0.5rem; color: #666;">
-        Статус: {{ req.status }}
-      </p>
       <a href="{% url 'courier:chat' chat_pk=req.id %}" class="btn btn-secondary mt-3" style="
         display: inline-block;
         background-color: #6c757d;
@@ -40,11 +40,8 @@
   {% for req in user_request %}
     <div class="card mb-4 p-4 shadow-sm rounded border" style="max-width: 600px; margin: 2rem auto; background-color: #f1f1ff;">
       <h3 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #444;">
-        {{ req }}
+        Дата: {{ req.created }} | Замовник: {{ req.user }}
       </h3>
-      <p style="margin-top: 0.5rem; color: #666;">
-        Статус: {{ req.status }}
-      </p>
       <a href="{% url 'courier:chat' chat_pk=req.id %}" class="btn btn-secondary mt-3" style="
         display: inline-block;
         background-color: #6c757d;
