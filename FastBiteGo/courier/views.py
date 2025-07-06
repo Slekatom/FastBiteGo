@@ -79,8 +79,8 @@ class MessageCreate(LoginRequiredMixin, CreateView):
     redirect_field_name = 'next'
 
     def form_valid(self, form):
-        chat_id = self.kwargs.get("chat_pk")
-        chat = Chat.objects.get(id=chat_id)
+        c_id = self.kwargs.get("chat_pk")
+        chat = Chat.objects.get(chat_id=c_id)
         form.instance.chat = chat
         form.instance.user = self.request.user
         form.save()
