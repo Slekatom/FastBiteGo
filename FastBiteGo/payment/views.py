@@ -32,8 +32,8 @@ class PaymentCreate(LoginRequiredMixin, CreateView):
             payment.save()
 
         request, _ = Request.objects.get_or_create(user = self.request.user, cart = cart)
-        chat = Chat.objects.create(user=request.user,
-                                   request=request)
+        # chat = Chat.objects.create(user=request.user,
+        #                            request=request)
         return super().form_valid(form)
 
     def get_success_url(self):
