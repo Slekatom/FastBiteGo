@@ -50,7 +50,7 @@ class RequestUpdate(LoginRequiredMixin, UpdateView):
             request = form.instance
             chat = Chat.objects.create(user = request.user,
                                 courier = self.request.user,
-                                request = request)
+                                request = request, chat_id = request.id)
             url = reverse('courier:detail', args=[chat.request.id])
             Message.objects.create(user = chat.courier,
                                    text = f"Кур'єр {chat.courier} прийняв замовлення {chat.user}. Переглянути замовлення: {url}",

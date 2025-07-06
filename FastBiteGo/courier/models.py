@@ -27,6 +27,7 @@ class Request(models.Model):
             return f"{self.user}`s cart is waiting for courier from {self.created}"
 
 class Chat(models.Model):
+    chat_id = models.PositiveIntegerField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="carts2")
     courier = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="requests2")  # Кур'єр
     created = models.DateTimeField(auto_now=True)
