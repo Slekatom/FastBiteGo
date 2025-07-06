@@ -1,9 +1,6 @@
 {% extends "_base.html" %}
-<html lang="uk">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Реєстрація</title>
+{% load crispy_forms_tags %}
+
 {% block content %}
 <h2 style="text-align:center; color:#ff6f00; font-size:2rem; margin-bottom:1.5rem; font-weight:bold; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
   📝 Реєстрація
@@ -20,20 +17,8 @@
   color: #333;
 ">
   {% csrf_token %}
-  {% for field in form %}
-    <div style="margin-bottom: 1.5rem;">
-      <label for="{{ field.id_for_label }}" style="font-weight:600; display:block; margin-bottom:0.5rem;">
-        {{ field.label }}{% if field.field.required %} <span style="color:red;">*</span>{% endif %}:
-      </label>
-      {{ field }}
-      {% if field.help_text %}
-        <small style="color:#777; display:block; margin-top:0.3rem; font-style: italic;">{{ field.help_text }}</small>
-      {% endif %}
-      {% for error in field.errors %}
-        <div style="color:red; font-size:0.9rem; margin-top:0.3rem;">{{ error }}</div>
-      {% endfor %}
-    </div>
-  {% endfor %}
+
+  {{ form|crispy }}
 
   <button type="submit" style="
     width: 100%;
