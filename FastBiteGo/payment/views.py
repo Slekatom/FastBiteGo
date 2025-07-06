@@ -4,7 +4,7 @@ from django.views.generic import CreateView
 from .models import *
 from .forms import *
 from cart.models import Cart, CartItems
-from courier.models import Request
+from courier.models import Request, Chat
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
@@ -32,7 +32,9 @@ class PaymentCreate(LoginRequiredMixin, CreateView):
             payment.save()
 
         request, _ = Request.objects.get_or_create(user = self.request.user, cart = cart)
-
+        chat = Chat.objects.create(user=request.user,
+                                   courier=self.request.user,
+                                   request=request)
         return super().form_valid(form)
 
     def get_success_url(self):

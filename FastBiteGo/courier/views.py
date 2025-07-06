@@ -48,9 +48,6 @@ class RequestUpdate(LoginRequiredMixin, UpdateView):
         if form.instance.courier != form.instance.user:
             form.save()
             request = form.instance
-            chat = Chat.objects.create(user = request.user,
-                                courier = self.request.user,
-                                request = request, chat_id = request.id)
             url = reverse('courier:detail', args=[chat.request.id])
             Message.objects.create(user = chat.courier,
                                    text = f"Кур'єр {chat.courier} прийняв замовлення {chat.user}. Переглянути замовлення: {url}",
@@ -79,8 +76,8 @@ class MessageCreate(LoginRequiredMixin, CreateView):
     redirect_field_name = 'next'
 
     def form_valid(self, form):
-        c_id = self.kwargs.get("chat_pk")
-        chat = Chat.objects.get(chat_id=c_id)
+        chat_id = self.kwargs.get("chat_pk")
+        chat = Chat.objects.get(id=chat_id)
         form.instance.chat = chat
         form.instance.user = self.request.user
         form.save()
@@ -91,7 +88,7 @@ class MessageCreate(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse_lazy("courier:chat", kwargs = {"chat_pk": self.object.chat.chat_id})
+        return reverse_lazy("courier:chat", kwargs = {"chat_pk": self.kwargs["chat_pk"]})
 
     def get_context_data(self, **kwargs):
         chat_id = self.kwargs.get("chat_pk")
