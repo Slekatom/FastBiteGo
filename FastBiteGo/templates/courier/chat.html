@@ -23,9 +23,10 @@
     gap: 14px;
     padding-right: 8px;
   ">
-    <a href="{% url 'courier:detail' request_ob.id %}" class="btn btn-success">
+    <a href="{% url 'courier:detail' request_ob.id %}" class="btn btn-outline-primary btn-lg mt-3">
     Перейти до замовлення
-  </a>
+</a>
+
     {% for message in messages %}
       {% if user_now.username == message.user.username %}
         <!-- Your message (right) -->
