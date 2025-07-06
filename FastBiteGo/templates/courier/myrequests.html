@@ -18,7 +18,7 @@
       <h3 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #444;">
         Дата: {{ req.created }} | Замовник: {{ req.user }}
       </h3>
-      <a href="{% url 'courier:chat' chat_pk=chat_id %}" class="btn btn-secondary mt-3" style="
+      <a href="{% url 'courier:chat' chat_pk=req.id %}" class="btn btn-secondary mt-3" style="
         display: inline-block;
         background-color: #6c757d;
         color: white;
@@ -42,7 +42,7 @@
       <h3 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #444;">
         Дата: {{ req.created }} | Замовник: {{ req.user }}
       </h3>
-      <a href="{% url 'courier:chat' chat_pk=chat_id %}" class="btn btn-secondary mt-3" style="
+      <a href="{% url 'courier:chat' chat_pk=req.id %}" class="btn btn-secondary mt-3" style="
         display: inline-block;
         background-color: #6c757d;
         color: white;
