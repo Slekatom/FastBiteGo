@@ -70,7 +70,7 @@ class RequestDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         request = self.get_object()
-        items = CartItem.objects.filter(cart = request.cart)
+        items = CartItems.objects.filter(cart = request.cart)
         context["request_ob"] = self.get_object()
         context["items"] = items
         return context
