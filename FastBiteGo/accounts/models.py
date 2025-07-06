@@ -5,7 +5,7 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=15)
     last_name = models.CharField(max_length=25)
     description = models.TextField(max_length=100, blank=True, null=True)
-    birthdate = models.CharField(null=True, blank = True)
+    birthdate = models.DateTimeField(null=True, blank = True)
     address = models.CharField(max_length=100)
     password = models.CharField(max_length=120)
     phone = models.PositiveIntegerField(null = True, blank=True)
