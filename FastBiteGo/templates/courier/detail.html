@@ -1,1 +1,7 @@
 <h1>  {{ request_ob.created }} </h1>
+
+{% for item in items %}
+
+{{ item.meal.title }}x {{ item.amount }}
+
+{% endfor %}
