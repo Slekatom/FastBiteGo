@@ -91,7 +91,7 @@ class MessageCreate(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse_lazy("courier:chat", kwargs = {"chat_pk": self.kwargs["chat_pk"]})
+        return reverse_lazy("courier:chat", kwargs = {"chat_pk": self.chat.chat_id})
 
     def get_context_data(self, **kwargs):
         chat_id = self.kwargs.get("chat_pk")
