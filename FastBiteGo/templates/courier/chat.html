@@ -23,9 +23,13 @@
     gap: 14px;
     padding-right: 8px;
   ">
-    <a href="{% url 'courier:detail' request_ob.id %}" class="btn btn-outline-primary btn-lg mt-3">
-    Перейти до замовлення
-</a>
+    {% if request_ob and request_ob.id %}
+  <a href="{% url 'courier:detail' request_ob.id %}" class="btn btn-success">Перейти до замовлення</a>
+{% else %}
+  <span>Информация о заказе отсутствует</span>
+{% endif %}
+<p>request_ob.id = {{ request_ob.id }}</p>
+
 
     {% for message in messages %}
       {% if user_now.username == message.user.username %}
