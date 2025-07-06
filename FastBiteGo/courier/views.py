@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, UpdateView, DetailView, CreateView
 from django.http import HttpResponseBadRequest
-
+from menu.models import CartItem
 from .forms import *
 from .models import *
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -69,7 +69,9 @@ class RequestDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["request_ob"] = self.get_object()
+        object = self.get_object()
+        context["request_ob"] = object
+        context["cartitems"] = CartItem.objects.filter(cart = object.cart)
         return context
 
 class MessageCreate(LoginRequiredMixin, CreateView):

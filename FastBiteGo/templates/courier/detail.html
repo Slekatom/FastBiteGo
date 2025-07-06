@@ -1,1 +1,53 @@
-<h1>  {{ request_ob.created }} </h1>
+{% extends "_base.html" %}
+{% block content %}
+<style>
+    .order-container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 12px;
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .order-header {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .order-item {
+        padding: 10px 0;
+        border-bottom: 1px solid #ddd;
+        font-size: 18px;
+    }
+
+    .order-item:last-child {
+        border-bottom: none;
+    }
+
+    .meal-name {
+        font-weight: 500;
+    }
+
+    .meal-amount {
+        color: #555;
+    }
+</style>
+
+<div class="order-container">
+    <div class="order-header">
+        Заказ от: {{ request_ob.created }}
+    </div>
+
+    {% for item in cartitem %}
+        <div class="order-item">
+            <span class="meal-name">{{ item.meal }}</span>
+            &times;
+            <span class="meal-amount">{{ item.amount }}</span>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
