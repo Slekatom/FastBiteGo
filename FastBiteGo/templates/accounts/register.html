@@ -2,40 +2,111 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h2 style="text-align:center; color:#ff6f00; font-size:2rem; margin-bottom:1.5rem; font-weight:bold; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-  📝 Реєстрація
-</h2>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Реєстрація</title>
+  <style>
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
 
-<form method="post" enctype="multipart/form-data" style="
-  max-width: 600px;
-  margin: 0 auto;
-  background: #fff;
-  padding: 2rem 3rem;
-  border-radius: 20px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-">
-  {% csrf_token %}
+    input:focus, textarea:focus {
+      border-color: #ff6f00;
+      box-shadow: 0 0 5px rgba(255, 111, 0, 0.4);
+      outline: none;
+    }
 
-  {{ form|crispy }}
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #333;
+    }
 
-  <button type="submit" style="
-    width: 100%;
-    background-color: #ff6f00;
-    color: white;
-    padding: 14px;
-    border: none;
-    font-size: 1.15rem;
-    font-weight: 700;
-    border-radius: 30px;
-    cursor: pointer;
-    box-shadow: 0 6px 18px rgba(255,111,0,0.45);
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  "
-  onmouseover="this.style.backgroundColor='#e65c00'; this.style.transform='scale(1.03)'"
-  onmouseout="this.style.backgroundColor='#ff6f00'; this.style.transform='scale(1)'">
-    ✅ Зареєструватися
-  </button>
-</form>
+    .form-wrapper {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .form-error {
+      color: #d32f2f;
+      background: #ffe6e6;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #ff6f00;
+      color: #fff;
+      border: none;
+      border-radius: 25px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .submit-btn:hover {
+      background-color: #e65c00;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .login-link a {
+      color: #ff6f00;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center; color:#ff6f00; margin-bottom: 1.5rem;">
+    📝 Реєстрація
+  </h2>
+
+  <form method="post" enctype="multipart/form-data" class="form-wrapper">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="form-error">
+        {% for error in form.non_field_errors %}
+          <p style="margin:0;">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {{ form|crispy }}
+
+    <button type="submit" class="submit-btn">✅ Зареєструватися</button>
+  </form>
+
+  <div class="login-link">
+    Вже маєте акаунт?
+    <a href="{% url 'accounts:login' %}">Увійти</a>
+  </div>
+</body>
+</html>
 {% endblock %}
