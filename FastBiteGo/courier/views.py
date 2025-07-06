@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, UpdateView, DetailView, CreateView
 from django.http import HttpResponseBadRequest
-from menu.models import CartItem
+from cart.models import CartItem
 from .forms import *
 from .models import *
 from django.contrib.auth.mixins import LoginRequiredMixin

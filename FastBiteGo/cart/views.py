@@ -4,7 +4,7 @@ from django.views.generic import CreateView, FormView, DetailView, TemplateView,
 from django.urls import reverse, reverse_lazy
 from .models import *
 from django.shortcuts import get_object_or_404, redirect
-from cart.models import Meal
+from menu.models import Meal
 from django.forms import modelformset_factory
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
