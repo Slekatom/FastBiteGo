@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, UpdateView, DetailView, CreateView
 from django.http import HttpResponseBadRequest
-
+from menu.models import CartItem
 from .forms import *
 from .models import *
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -48,9 +48,9 @@ class RequestUpdate(LoginRequiredMixin, UpdateView):
         if form.instance.courier != form.instance.user:
             form.save()
             request = form.instance
-            chat = Chat.objects.create(user = request.user,
-                                courier = self.request.user,
-                                request = request)
+            chat = Chat.objects.get(request = request)
+            chat.courier = self.request.user
+            chat.save()
             url = reverse('courier:detail', args=[chat.request.id])
             Message.objects.create(user = chat.courier,
                                    text = f"Кур'єр {chat.courier} прийняв замовлення {chat.user}. Переглянути замовлення: {url}",
