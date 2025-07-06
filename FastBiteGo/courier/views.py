@@ -48,6 +48,7 @@ class RequestUpdate(LoginRequiredMixin, UpdateView):
         form.instance.chat.courier = self.request.user
         if form.instance.courier != form.instance.user:
             form.save()
+            form.instance.chat.save()
             request = form.instance
             chat = Chat.objects.get(request = request, courier = form.instance.courier)
             url = reverse('courier:detail', args=[chat.request.id])
