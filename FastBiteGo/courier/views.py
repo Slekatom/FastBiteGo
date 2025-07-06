@@ -69,7 +69,9 @@ class RequestDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["request_ob"] = self.get_object()
+        object = self.get_object()
+        context["request_ob"] = object
+        context["cartitems"] = CartItem.objects.filter(cart = object.cart)
         return context
 
 class MessageCreate(LoginRequiredMixin, CreateView):
