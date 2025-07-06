@@ -102,5 +102,5 @@ class MessageCreate(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context["messages"] = Message.objects.filter(chat = chat)
         context["user_now"] = self.request.user
-        context["request_ob"] = self.get_object()
+        context["request_ob"] = chat
         return context
