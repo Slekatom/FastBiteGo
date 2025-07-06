@@ -26,9 +26,8 @@
     {% if request_ob and request_ob.id %}
   <a href="{% url 'courier:detail' request_ob.id %}" class="btn btn-success">Перейти до замовлення</a>
 {% else %}
-  <span>Информация о заказе отсутствует</span>
+  <span>Информація про замовлення відсутня</span>
 {% endif %}
-<p>request_ob.id = {{ request_ob.id }}</p>
 
 
     {% for message in messages %}
