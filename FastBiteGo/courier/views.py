@@ -45,6 +45,7 @@ class RequestUpdate(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.status = "Is Taken"
         form.instance.courier = self.request.user
+        form.instance.chat.courier = self.request.user
         if form.instance.courier != form.instance.user:
             form.save()
             request = form.instance
@@ -53,6 +54,7 @@ class RequestUpdate(LoginRequiredMixin, UpdateView):
             Message.objects.create(user = chat.courier,
                                    text = f"Кур'єр {chat.courier} прийняв замовлення {chat.user}. Переглянути замовлення: {url}",
                                    chat = chat)
+
             return super().form_valid(form)
         else:
             return HttpResponseBadRequest("Не дури систему, хай інший тобі доставить їжу!")

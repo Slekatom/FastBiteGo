@@ -33,7 +33,6 @@ class PaymentCreate(LoginRequiredMixin, CreateView):
 
         request, _ = Request.objects.get_or_create(user = self.request.user, cart = cart)
         chat = Chat.objects.create(user=request.user,
-                                   courier=self.request.user,
                                    request=request)
         return super().form_valid(form)
 
