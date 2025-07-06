@@ -7,7 +7,7 @@ class CustomUser(AbstractUser):
     description = models.TextField(max_length=100, blank=True, null=True)
     birthdate = models.DateTimeField(null=True, blank = True)
     address = models.CharField(max_length=100)
-    password = models.CharField(max_length=120)
+    password = models.CharField(max_length=120, null=True, blank = True)
     phone = models.PositiveIntegerField(null = True, blank=True)
     image = models.ImageField(blank=True, null=True)
     courier = models.BooleanField(default=False)
