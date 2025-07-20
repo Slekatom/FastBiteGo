@@ -7,7 +7,7 @@ from django.conf import settings
 class Category(models.Model):
     title = models.CharField(max_length=30)
     description = models.TextField(max_length=50)
-    media = models.ImageField(upload_to='media/category')
+    media = models.ImageField(upload_to='category/')
 
     def __str__(self):
         return f"Category {self.title}"
@@ -19,7 +19,7 @@ class Meal(models.Model):
 
     title = models.CharField(max_length=30)
     description = models.TextField(max_length=50)
-    media = models.ImageField(upload_to='media/category')
+    media = models.ImageField(upload_to='meal/')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     price = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank = True, null = True)

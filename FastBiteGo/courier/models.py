@@ -28,7 +28,7 @@ class Request(models.Model):
 
 class Chat(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="carts2")
-    courier = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="requests2")  # Кур'єр
+    courier = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="requests2", default=None)  # Кур'єр
     created = models.DateTimeField(auto_now=True)
     request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name="chats3")
 
