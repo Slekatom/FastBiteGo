@@ -16,7 +16,7 @@ dotenv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
 load_dotenv(dotenv_path)
 
 # add your project directory to the sys.path
-project_home = '/home/bunkeronline/django-bunker-online'
+project_home = '/home/FastBiteGo/FastBiteGo'
 if project_home not in sys.path:
     sys.path.insert(0, project_home)
 
